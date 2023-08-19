@@ -1,0 +1,1 @@
+export interface UserProfile { id: string, firstname: string, surname: string, role: "DOCTOR" | "STUDENT", user_id: string }
