@@ -22,6 +22,19 @@ export enum AvatarTypes {
   'STAGIONATO' = '3',
 }
 
+export interface Quiz {
+  id: number;
+  question: string;
+  clinical_case: number;
+}
+
+export interface QuizAnswer {
+  id: number;
+  question: string;
+  is_correct: boolean;
+  quiz: number
+}
+
 export interface ClinicalCase {
   id: number;
   patient_name: string;
