@@ -35,7 +35,7 @@ module.exports = {
   context: __dirname,
   entry: './src/index.tsx',
   output: {
-    path: path.resolve(__dirname, 'build'),
+    path: path.resolve(__dirname, 'docs'),
     filename: 'main.js',
     publicPath: '/',
   },
