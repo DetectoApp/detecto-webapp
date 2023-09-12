@@ -4,7 +4,6 @@ import {
   Navigate,
   Outlet,
   Route,
-  BrowserRouter as Router,
   Routes,
 } from 'react-router-dom';
 import AppHeader from './components/layout/AppHeader';
@@ -21,9 +20,8 @@ import AddClinicalCaseTalk from './components/pages/mock/AddClinicalCaseTalk';
 import { Flex } from '@chakra-ui/react';
 import './styles.css';
 
-export const AuthedOutlet = () => {
-  const { user } = useAuth();
-  return user ? <Outlet /> : <Navigate to={'/login'} />;
+export const AuthedOutlet = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
+  return isLoggedIn ? <Outlet /> : <Navigate to={'/login'} />;
 };
 
 export default function App() {
@@ -39,23 +37,13 @@ export default function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/login" element={<Login />} />
               {/* auth */}
-              <Route path="/demoadd" element={<AuthedOutlet />}>
-                <Route element={<AddClinicalCase />} />
-              </Route>
-              <Route path="/demoadd/exam" element={<AuthedOutlet />}>
-                <Route element={<AddClinicalCaseExam />} />
-              </Route>
-              <Route path="/demoadd/talk" element={<AuthedOutlet />}>
-                <Route element={<AddClinicalCaseTalk />} />
-              </Route>
-              <Route path="/list" element={<AuthedOutlet />}>
-                <Route element={<ClinicalCaseList />} />
-              </Route>
-              <Route path="/case/:id" element={<AuthedOutlet />}>
-                <Route element={<ClinicalCaseDetails />} />
-              </Route>
-              <Route path="/profile" element={<AuthedOutlet />}>
-                <Route element={<Profile />} />
+              <Route element={<AuthedOutlet isLoggedIn={isLoggedIn} />}>
+                <Route path="/demoadd" element={<AddClinicalCase />} />
+                <Route path="/demoadd/exam" element={<AddClinicalCaseExam />} />
+                <Route path="/demoadd/talk" element={<AddClinicalCaseTalk />} />
+                <Route path="/list" element={<ClinicalCaseList />} />
+                <Route path="/case/:id" element={<ClinicalCaseDetails />} />
+                <Route path="/profile" element={<Profile />} />
               </Route>
 
               {/* helper */}

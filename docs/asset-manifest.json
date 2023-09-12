@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/detecto-webapp/static/css/main.d80d5c0d.css",
-    "main.js": "/detecto-webapp/static/js/main.e6a71e61.js",
+    "main.js": "/detecto-webapp/static/js/main.cd24a4ed.js",
     "static/js/255.66173db6.chunk.js": "/detecto-webapp/static/js/255.66173db6.chunk.js",
     "static/media/detecto.svg": "/detecto-webapp/static/media/detecto.6cb7d29318b223033d0e40436fe376dd.svg",
     "static/media/female_avatar.svg": "/detecto-webapp/static/media/female_avatar.af9c59f1ea1483c8a6bc17bec898aad0.svg",
@@ -17,11 +17,11 @@
     "static/media/cross_icon.svg": "/detecto-webapp/static/media/cross_icon.82f882924211da452b266f764213040e.svg",
     "index.html": "/detecto-webapp/index.html",
     "main.d80d5c0d.css.map": "/detecto-webapp/static/css/main.d80d5c0d.css.map",
-    "main.e6a71e61.js.map": "/detecto-webapp/static/js/main.e6a71e61.js.map",
+    "main.cd24a4ed.js.map": "/detecto-webapp/static/js/main.cd24a4ed.js.map",
     "255.66173db6.chunk.js.map": "/detecto-webapp/static/js/255.66173db6.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.d80d5c0d.css",
-    "static/js/main.e6a71e61.js"
+    "static/js/main.cd24a4ed.js"
   ]
 }
