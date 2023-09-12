@@ -17,16 +17,22 @@ import {
   FormErrorMessage,
 } from '@chakra-ui/react';
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
-
+import InfoIcon from '../../assets/info.svg';
 export const CustomInput = (
-  props: InputProps & { label: string; disabled?: boolean, helperText?: string, errorText?: string | boolean | null, info?: ReactNode }
+  props: InputProps & {
+    label: string;
+    disabled?: boolean;
+    helperText?: string;
+    errorText?: string | boolean | null;
+    info?: ReactNode;
+  }
 ) => {
   const [type, setType] = useState<InputProps['type']>(props.type);
   useEffect(() => {
     setType(props.type);
   }, [props.type]);
 
-  console.log({ props }, props.errorText)
+  console.log({ props }, props.errorText);
 
   return (
     <FormControl isInvalid={props.isInvalid || !!props.errorText}>
@@ -54,10 +60,14 @@ export const CustomInput = (
           m="0"
         >
           <Flex paddingX="8px" gap="16px" align="center" height="100%">
-            {props.info ? <Image src="/assets/info.svg" height="32px" minWidth="32px" /> : null}
+            {props.info ? (
+              <Image src={InfoIcon} height="32px" minWidth="32px" />
+            ) : null}
             {props.type === 'password' ? (
               <Image
-                src={type === "password" ? "/assets/show.svg" : "/assets/hide.svg"}
+                src={
+                  type === 'password' ? '/assets/show.svg' : '/assets/hide.svg'
+                }
                 height="32px"
                 minWidth="32px"
                 onClick={() => {
@@ -71,7 +81,11 @@ export const CustomInput = (
           </Flex>
         </InputRightElement>
       </InputGroup>
-      {props.errorText ? <FormErrorMessage>{props.errorText}</FormErrorMessage> : props.helperText ? <FormHelperText>{props.helperText}</FormHelperText> : null}
+      {props.errorText ? (
+        <FormErrorMessage>{props.errorText}</FormErrorMessage>
+      ) : props.helperText ? (
+        <FormHelperText>{props.helperText}</FormHelperText>
+      ) : null}
     </FormControl>
   );
 };

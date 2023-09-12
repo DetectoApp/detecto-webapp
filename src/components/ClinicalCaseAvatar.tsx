@@ -1,6 +1,7 @@
 import { AvatarTypes } from '../types/types';
 import React from 'react';
-import { Flex, FlexProps, Image, ImageProps, flexbox } from '@chakra-ui/react';
+import { Flex, FlexProps, Image, ImageProps } from '@chakra-ui/react';
+import FemaleAvatar from '../assets/female_avatar.svg';
 
 export const ClinicalCaseAvatar = ({
   avatar,
@@ -8,13 +9,13 @@ export const ClinicalCaseAvatar = ({
 }: { avatar: AvatarTypes } & ImageProps) => {
   switch (avatar) {
     case AvatarTypes.ADOLESCENT:
-      return <Image {...props} src="/assets/female_avatar.svg" />;
+      return <Image {...props} src={FemaleAvatar} />;
     case AvatarTypes.ADULT:
-      return <Image {...props} src="/assets/female_avatar.svg" />;
+      return <Image {...props} src={FemaleAvatar} />;
     case AvatarTypes.STAGIONATO:
-      return <Image {...props} src="/assets/female_avatar.svg" />;
+      return <Image {...props} src={FemaleAvatar} />;
     default:
-      return <Image {...props} src="/assets/female_avatar.svg" />;
+      return <Image {...props} src={FemaleAvatar} />;
   }
 };
 

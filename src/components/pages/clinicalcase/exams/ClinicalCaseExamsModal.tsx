@@ -22,6 +22,9 @@ import supabase from '../../../../supabase';
 import { ExamTypes } from '../../../../types/enums';
 import { useCaseExplorationStore } from '../../../../store';
 
+import ExamIcon from '../../../../assets/exam_icon.svg';
+import BackIcon from '../../../../assets/back.svg';
+
 const initialQuestion =
   'Vuoi effettuare l’esame? Se si premi prescrivi.\n\nRicorda che gli esami possono essere anche svianti e non correlati al caso.';
 const ignoredString = 'Hai ignorato l’esame.';
@@ -115,9 +118,9 @@ const ClinicalCaseExamsModalList = ({
   }, [clinicalCase]);
 
   const filteredExams = useMemo(() => {
-    if (examFilter) return availableExams.filter(t => t.type === examFilter)
-    else return availableExams
-  }, [examFilter, availableExams])
+    if (examFilter) return availableExams.filter(t => t.type === examFilter);
+    else return availableExams;
+  }, [examFilter, availableExams]);
 
   if (loading) {
     return (
@@ -203,14 +206,14 @@ const ExamModalDetail = ({
         mt={2}
         mr="auto"
         h="48px"
-        src="/assets/back.svg"
+        src={BackIcon}
         onClick={() => {
           setExam(undefined);
         }}
       />
       <Flex mt={2} mb={4} w="100%" align="center" gap="2">
         <Button variant="risen_secondary" w="64px" h="64px">
-          <Image src="/assets/exam_icon.svg" />
+          <Image src={ExamIcon} />
         </Button>
         <Text variant="bold_28_1p">{exam.title}</Text>
       </Flex>

@@ -8,6 +8,11 @@ import { ClinicalCaseInfoModal } from './ClinicalCaseInfoModal';
 import { ClinicalCaseExamsModal } from '../exams/ClinicalCaseExamsModal';
 import { ClinicalCaseTalksModal } from '../talks/ClinicalCaseTalksModal';
 import { ClinicalCaseDiagnosisModal } from '../diagnosis/ClinicalCaseDiagnosisModal';
+import CrossIcon from '../../../../assets/cross_icon.svg';
+import TalkIcon from '../../../../assets/talk_icon.svg';
+import ExamIcon from '../../../../assets/exam_icon.svg';
+import PatientIcon from '../../../../assets/patient_icon.svg';
+import BackIcon from '../../../../assets/back.svg';
 
 export default function ClinicalCaseDetails() {
   const { id } = useParams<{ id: string }>();
@@ -83,7 +88,8 @@ export default function ClinicalCaseDetails() {
             isOpen
             onClose={() => setModalShowing(undefined)}
           />
-        ); case 'diagnosis':
+        );
+      case 'diagnosis':
         return (
           <ClinicalCaseDiagnosisModal
             clinicalCase={clinicalCase}
@@ -100,7 +106,7 @@ export default function ClinicalCaseDetails() {
         <Image
           w="64px"
           h="64px"
-          src="/assets/cross_icon.svg"
+          src={CrossIcon}
           onClick={() => navigate('/list')}
         />
         <Text variant="patient_name_details">{clinicalCase.patient_name}</Text>
@@ -125,7 +131,7 @@ export default function ClinicalCaseDetails() {
             alignItems="center"
             gap="1"
           >
-            <Image src="/assets/talk_icon.svg" w="64px" h="64px" />
+            <Image src={TalkIcon} w="64px" h="64px" />
             <Text variant="bold_24_1p" textTransform="none">
               Parla col paziente
             </Text>
@@ -141,7 +147,7 @@ export default function ClinicalCaseDetails() {
             alignItems="center"
             gap="1"
           >
-            <Image src="/assets/exam_icon.svg" w="64px" h="64px" />
+            <Image src={ExamIcon} w="64px" h="64px" />
             <Text variant="bold_24_1p" textTransform="none">
               Prescrivi esami
             </Text>
@@ -168,7 +174,7 @@ export default function ClinicalCaseDetails() {
             w="156px"
             h="104px"
           >
-            <Image src="/assets/patient_icon.svg" w="64px" h="64px" />
+            <Image src={PatientIcon} w="64px" h="64px" />
           </Button>
           <Text variant="bold_24_1p">Info paziente</Text>
         </Flex>
@@ -181,7 +187,7 @@ export default function ClinicalCaseDetails() {
             h="104px"
           >
             <Image
-              src="/assets/back.svg"
+              src={BackIcon}
               w="64px"
               h="64px"
               transform="rotate(180deg)"

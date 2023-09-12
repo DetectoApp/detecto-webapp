@@ -12,7 +12,7 @@ import Homepage from './components/pages/Homepage';
 import AddClinicalCaseExam from './components/pages/mock/AddClinicalCaseExam';
 import AddClinicalCaseTalk from './components/pages/mock/AddClinicalCaseTalk';
 import { Flex } from '@chakra-ui/react';
-import "./styles.css"
+import './styles.css';
 
 export default function App() {
   return (

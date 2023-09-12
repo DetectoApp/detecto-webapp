@@ -21,6 +21,8 @@ import {
 import supabase from '../../../../supabase';
 import { TalkTypes } from '../../../../types/enums';
 import { useCaseExplorationStore } from '../../../../store';
+import BackIcon from '../../../../assets/back.svg';
+import TalkIcon from '../../../../assets/talk_icon.svg';
 
 const initialQuestion =
   'Chiedi al paziento le informazioni giuste che possono aiutarti a risolvere il suo problema';
@@ -113,9 +115,9 @@ const ClinicalCaseTalksModalList = ({
   }, [clinicalCase]);
 
   const filteredTalks = useMemo(() => {
-    if (talkFilter) return availableTalks.filter(t => t.type === talkFilter)
-    else return availableTalks
-  }, [talkFilter, availableTalks])
+    if (talkFilter) return availableTalks.filter(t => t.type === talkFilter);
+    else return availableTalks;
+  }, [talkFilter, availableTalks]);
 
   if (loading) {
     return (
@@ -165,8 +167,8 @@ const ClinicalCaseTalksModalList = ({
                     talkStatus === 'IGNORED'
                       ? 'error'
                       : talkStatus === 'OPENED'
-                        ? 'secondary.500'
-                        : undefined
+                      ? 'secondary.500'
+                      : undefined
                   }
                   onClick={() => {
                     setTalk(talk);
@@ -201,14 +203,14 @@ const TalkModalDetail = ({
         mt={2}
         mr="auto"
         h="48px"
-        src="/assets/back.svg"
+        src={BackIcon}
         onClick={() => {
           setTalk(undefined);
         }}
       />
       <Flex mt={2} mb={4} w="100%" align="center" gap="2">
         <Button variant="risen_secondary" w="64px" h="64px">
-          <Image src="/assets/talk_icon.svg" />
+          <Image src={TalkIcon} />
         </Button>
         <Text variant="bold_28_1p">{talk.title}</Text>
       </Flex>
@@ -225,13 +227,16 @@ const TalkModalDetail = ({
           {talkStatus === 'OPENED'
             ? talk.answer
             : talkStatus === 'IGNORED'
-              ? ignoredString
-              : initialQuestion}
+            ? ignoredString
+            : initialQuestion}
         </Text>
       </Box>
 
       <Flex ml="auto" gap="2">
-        <Button disabled={talkStatus === 'OPENED' || talkStatus === 'IGNORED'} onClick={() => setTalkStatus(talk.type + talk.id, 'IGNORED')}>
+        <Button
+          disabled={talkStatus === 'OPENED' || talkStatus === 'IGNORED'}
+          onClick={() => setTalkStatus(talk.type + talk.id, 'IGNORED')}
+        >
           Ignora
         </Button>
         <Button

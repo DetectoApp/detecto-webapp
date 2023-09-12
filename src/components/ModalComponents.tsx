@@ -1,19 +1,17 @@
 import {
-  ModalProps,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  Flex,
-  Image,
-  Text,
   Box,
   Button,
-  FlexProps,
+  Flex,
+  Image,
+  Modal,
+  ModalContent,
+  ModalOverlay,
+  ModalProps,
+  Text,
 } from '@chakra-ui/react';
-import React, { ReactNode } from 'react';
+import React from 'react';
+
+import CrossIcon from '../assets/cross_icon.svg';
 
 export interface ModalContainerAuxProps {
   titleIconUrl: string;
@@ -46,7 +44,7 @@ export const ModalContainer = ({
           <Text variant="bold_24_1p" mr="auto">
             {title}
           </Text>
-          <Image src="/assets/cross_icon.svg" onClick={modalProps.onClose} />
+          <Image src={CrossIcon} onClick={modalProps.onClose} />
         </Flex>
         <Flex
           borderRadius="24px"

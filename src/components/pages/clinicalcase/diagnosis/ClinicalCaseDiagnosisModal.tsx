@@ -16,24 +16,52 @@ import { ClinicalCaseAvatar } from '../../../../components/ClinicalCaseAvatar';
 import supabase from '../../../../supabase';
 import { useCaseExplorationStore } from '../../../../store';
 
+import ExamIcon from '../../../../assets/exam_icon.svg';
+
 export const ClinicalCaseDiagnosisModal = ({
   clinicalCase,
   ...modalProps
 }: { clinicalCase: ClinicalCase } & Partial<Omit<ModalProps, 'children'>>) => {
-
-  const [page, setPage] = useState<"quiz" | "finishedScores" | "finishedAnswers">("quiz")
+  const [page, setPage] = useState<
+    'quiz' | 'finishedScores' | 'finishedAnswers'
+  >('quiz');
 
   const getPanelToRender = () => {
     switch (page) {
-      case "quiz": return <QuizDiagnosisStep clinicalCase={clinicalCase} onLastConfirm={() => setPage('finishedScores')} />
-      case "finishedScores": return <FinishedDiagnosisStep clinicalCase={clinicalCase} step="scores" onChangeTab={() => { setPage("finishedAnswers") }} />
-      case "finishedAnswers": return <FinishedDiagnosisStep clinicalCase={clinicalCase} step="answers" onChangeTab={() => { setPage("finishedScores") }} />
-      default: return null;
+      case 'quiz':
+        return (
+          <QuizDiagnosisStep
+            clinicalCase={clinicalCase}
+            onLastConfirm={() => setPage('finishedScores')}
+          />
+        );
+      case 'finishedScores':
+        return (
+          <FinishedDiagnosisStep
+            clinicalCase={clinicalCase}
+            step="scores"
+            onChangeTab={() => {
+              setPage('finishedAnswers');
+            }}
+          />
+        );
+      case 'finishedAnswers':
+        return (
+          <FinishedDiagnosisStep
+            clinicalCase={clinicalCase}
+            step="answers"
+            onChangeTab={() => {
+              setPage('finishedScores');
+            }}
+          />
+        );
+      default:
+        return null;
     }
-  }
+  };
 
   return (
-    <Modal isOpen onClose={() => { }} {...modalProps} size="full">
+    <Modal isOpen onClose={() => {}} {...modalProps} size="full">
       <ModalContent position="relative" bg="white">
         {getPanelToRender()}
       </ModalContent>
@@ -41,9 +69,16 @@ export const ClinicalCaseDiagnosisModal = ({
   );
 };
 
-const QuizDiagnosisStep = ({ clinicalCase, onLastConfirm }: { clinicalCase: ClinicalCase, onLastConfirm: () => void }) => {
+const QuizDiagnosisStep = ({
+  clinicalCase,
+  onLastConfirm,
+}: {
+  clinicalCase: ClinicalCase;
+  onLastConfirm: () => void;
+}) => {
   const [availableQuizzes, setAvailableQuizzes] = useState<
-    (Quiz & { answers: QuizAnswer[] })[]>([]);
+    (Quiz & { answers: QuizAnswer[] })[]
+  >([]);
   const givenQuizAnswers = useCaseExplorationStore(s => s.quizAnswers);
   const { quizAnswers, setQuizAnswer } = useCaseExplorationStore(s => ({
     quizAnswers: s.quizAnswers,
@@ -53,7 +88,7 @@ const QuizDiagnosisStep = ({ clinicalCase, onLastConfirm }: { clinicalCase: Clin
 
   useEffect(() => {
     const fetchQuizzes = async () => {
-      const quizzes: (Quiz & { answers: QuizAnswer[] })[] = []
+      const quizzes: (Quiz & { answers: QuizAnswer[] })[] = [];
 
       const { data, error } = await supabase
         .from<Quiz>('quiz')
@@ -65,7 +100,7 @@ const QuizDiagnosisStep = ({ clinicalCase, onLastConfirm }: { clinicalCase: Clin
         return;
       }
 
-      for(const q of data) {
+      for (const q of data) {
         const { data: answers, error } = await supabase
           .from<QuizAnswer>('quiz_answer')
           .select('*')
@@ -74,7 +109,7 @@ const QuizDiagnosisStep = ({ clinicalCase, onLastConfirm }: { clinicalCase: Clin
         if (error) {
           console.log(error);
         } else {
-          quizzes.push({ ...q, answers })
+          quizzes.push({ ...q, answers });
         }
       }
 
@@ -85,16 +120,16 @@ const QuizDiagnosisStep = ({ clinicalCase, onLastConfirm }: { clinicalCase: Clin
     fetchQuizzes();
   }, [clinicalCase]);
 
-  const [quizIndex, setQuizIndex] = useState<number>(0)
-  const currentQuiz = availableQuizzes[quizIndex]
-  const currentQuizAnswer = quizAnswers[currentQuiz?.id.toString()]
+  const [quizIndex, setQuizIndex] = useState<number>(0);
+  const currentQuiz = availableQuizzes[quizIndex];
+  const currentQuizAnswer = quizAnswers[currentQuiz?.id.toString()];
 
   const onConfirmButton = () => {
     if (currentQuizAnswer) {
-      if (quizIndex === availableQuizzes.length) onLastConfirm()
-      else setQuizIndex(i => i++)
+      if (quizIndex === availableQuizzes.length) onLastConfirm();
+      else setQuizIndex(i => i++);
     }
-  }
+  };
 
   if (loading) {
     return (
@@ -105,7 +140,7 @@ const QuizDiagnosisStep = ({ clinicalCase, onLastConfirm }: { clinicalCase: Clin
       />
     );
   }
-  
+
   if (!availableQuizzes.length) {
     return (
       <Box alignItems="center">
@@ -114,70 +149,91 @@ const QuizDiagnosisStep = ({ clinicalCase, onLastConfirm }: { clinicalCase: Clin
     );
   }
 
-  return <Flex align="center" direction="column">
-    <Stepper steps={availableQuizzes} currentStep={quizIndex} />
-    <Text>{currentQuiz.question}</Text>
-    {currentQuiz.answers.map(a => {
-      return <Button onClick={() => setQuizAnswer(currentQuiz.id.toString(), a)} disabled={!!currentQuizAnswer?.id && currentQuizAnswer.id !== a.id}>{a.question}</Button>
-    })}
-    <Button onClick={onConfirmButton} disabled={!currentQuizAnswer} >Conferma</Button>
-  </Flex>
-
-}
-
-const FinishedDiagnosisStep = ({ step, onChangeTab, clinicalCase }: { step: "scores" | "answers", onChangeTab: () => void, clinicalCase: ClinicalCase }) => {
-  return <Flex align="center" direction="column">
-    <Text>Caso completato</Text>
-    <Flex position="relative" flexGrow={1}>
-      <ClinicalCaseAvatar
-        avatar={clinicalCase.avatar}
-        w="236px"
-        position="absolute"
-        bottom="0"
-        right="50%"
-        transform="translateX(50%)"
-      />
-    </Flex>
-    {step === "answers" ?
-      <Flex direction="column">
-        <Flex mt={2} mb={4} w="100%" align="center" gap="2">
-          <Button variant="risen_secondary" w="64px" h="64px">
-            <Image src="/assets/exam_icon.svg" />
+  return (
+    <Flex align="center" direction="column">
+      <Stepper steps={availableQuizzes} currentStep={quizIndex} />
+      <Text>{currentQuiz.question}</Text>
+      {currentQuiz.answers.map(a => {
+        return (
+          <Button
+            onClick={() => setQuizAnswer(currentQuiz.id.toString(), a)}
+            disabled={!!currentQuizAnswer?.id && currentQuizAnswer.id !== a.id}
+          >
+            {a.question}
           </Button>
-          <Text variant="bold_28_1p">Risoluzione del caso</Text>
-        </Flex> <Box
-          backgroundColor="secondary.1000"
-          borderColor="primary"
-          borderWidth="4px"
-          p="4"
-          mb="4"
-          borderRadius="16px"
-        >
-          <Text variant="regular_20_1p">
-            CACCASBURO</Text>
-          <Flex ml="auto" gap="2">
-            <Button
-              onClick={() => {
-                alert("YEYE")
-              }}>
-              Ignora
+        );
+      })}
+      <Button onClick={onConfirmButton} disabled={!currentQuizAnswer}>
+        Conferma
+      </Button>
+    </Flex>
+  );
+};
+
+const FinishedDiagnosisStep = ({
+  step,
+  onChangeTab,
+  clinicalCase,
+}: {
+  step: 'scores' | 'answers';
+  onChangeTab: () => void;
+  clinicalCase: ClinicalCase;
+}) => {
+  return (
+    <Flex align="center" direction="column">
+      <Text>Caso completato</Text>
+      <Flex position="relative" flexGrow={1}>
+        <ClinicalCaseAvatar
+          avatar={clinicalCase.avatar}
+          w="236px"
+          position="absolute"
+          bottom="0"
+          right="50%"
+          transform="translateX(50%)"
+        />
+      </Flex>
+      {step === 'answers' ? (
+        <Flex direction="column">
+          <Flex mt={2} mb={4} w="100%" align="center" gap="2">
+            <Button variant="risen_secondary" w="64px" h="64px">
+              <Image src={ExamIcon} />
             </Button>
-            <Button
-              onClick={() => {
-                alert("YEYE")
-              }}
-              variant="risen_secondary"
-            >
-              PRESCRIVI
-            </Button>
-          </Flex>
-        </Box>
-
-
-      </Flex> : <Flex mt={2} mb={4} w="100%" align="center" gap="2">
-        YEYEYEYYEYEY</Flex>}
-    <Button onClick={onChangeTab}>Vai da mammeta</Button>
-
-  </Flex>
-
-}
+            <Text variant="bold_28_1p">Risoluzione del caso</Text>
+          </Flex>{' '}
+          <Box
+            backgroundColor="secondary.1000"
+            borderColor="primary"
+            borderWidth="4px"
+            p="4"
+            mb="4"
+            borderRadius="16px"
+          >
+            <Text variant="regular_20_1p">CACCASBURO</Text>
+            <Flex ml="auto" gap="2">
+              <Button
+                onClick={() => {
+                  alert('YEYE');
+                }}
+              >
+                Ignora
+              </Button>
+              <Button
+                onClick={() => {
+                  alert('YEYE');
+                }}
+                variant="risen_secondary"
+              >
+                PRESCRIVI
+              </Button>
+            </Flex>
+          </Box>
+        </Flex>
+      ) : (
+        <Flex mt={2} mb={4} w="100%" align="center" gap="2">
+          YEYEYEYYEYEY
+        </Flex>
+      )}
+      <Button onClick={onChangeTab}>Vai da mammeta</Button>
+    </Flex>
+  );
+};
