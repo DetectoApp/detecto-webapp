@@ -18,6 +18,9 @@ import {
 } from '@chakra-ui/react';
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import InfoIcon from '../../assets/info.svg';
+import ShowIcon from '../../assets/show.svg';
+import HideIcon from '../../assets/hide.svg';
+
 export const CustomInput = (
   props: InputProps & {
     label: string;
@@ -65,9 +68,7 @@ export const CustomInput = (
             ) : null}
             {props.type === 'password' ? (
               <Image
-                src={
-                  type === 'password' ? '/assets/show.svg' : '/assets/hide.svg'
-                }
+                src={type === 'password' ? ShowIcon : HideIcon}
                 height="32px"
                 minWidth="32px"
                 onClick={() => {

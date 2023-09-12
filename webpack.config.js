@@ -1,8 +1,8 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const path = require('path')
-const { InjectManifest } = require('workbox-webpack-plugin')
-const CopyPlugin = require('copy-webpack-plugin')
-const DotenvWebpackPlugin = require('dotenv-webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
+const { InjectManifest } = require('workbox-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
+const DotenvWebpackPlugin = require('dotenv-webpack');
 
 const webpackPlugins = [
   new HtmlWebpackPlugin({
@@ -21,15 +21,15 @@ const webpackPlugins = [
       { from: './public/ownBrand/', to: 'ownBrand' },
     ],
   }),
-]
+];
 
 webpackPlugins.push(
   new InjectManifest({
     swSrc: './src/src-sw.js',
     maximumFileSizeToCacheInBytes: 1024 * 1024 * 10,
     swDest: 'service-worker.js',
-  }),
-)
+  })
+);
 
 module.exports = {
   context: __dirname,
@@ -37,7 +37,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'docs'),
     filename: 'main.js',
-    publicPath: '/',
+    publicPath: '/detecto-webapp',
   },
   devServer: {
     historyApiFallback: true,
@@ -45,10 +45,10 @@ module.exports = {
     host: '0.0.0.0',
     disableHostCheck: true,
     /*headers: {
-      //'Access-Control-Allow-Origin': '*',
-      //'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
-      // 'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization',
-    },*/
+          //'Access-Control-Allow-Origin': '*',
+          //'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+          // 'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization',
+        },*/
   },
   devtool: 'source-map',
   resolve: {
@@ -57,7 +57,17 @@ module.exports = {
       path: false,
       fs: false,
     },
-    extensions: ['.js', '.jsx', '.ts', '.tsx', '.json', '.css', '.scss', '.svg', 'was'],
+    extensions: [
+      '.js',
+      '.jsx',
+      '.ts',
+      '.tsx',
+      '.json',
+      '.css',
+      '.scss',
+      '.svg',
+      'was',
+    ],
     modules: ['src', 'node_modules'],
     alias: {
       '@': path.resolve(__dirname, 'src'),
@@ -92,4 +102,4 @@ module.exports = {
     ],
   },
   plugins: webpackPlugins,
-}
+};

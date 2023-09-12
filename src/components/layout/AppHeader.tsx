@@ -2,13 +2,14 @@ import { Button, Flex, HStack, Image, Text } from '@chakra-ui/react';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../providers/AuthProvider';
+import LogoIcon from '../../assets/detecto.svg';
 
 export default function AppHeader() {
   const { user } = useAuth();
   return (
     <Flex pt="8" justify="space-between" align="center" minH="110px">
       <Link to="/">
-        <Image h="45px" src={'/assets/detecto.svg'} />
+        <Image h="45px" src={LogoIcon} />
       </Link>
       <Flex align="center">
         {user ? (

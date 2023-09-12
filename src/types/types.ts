@@ -1,5 +1,3 @@
-import { UserProfile } from "./profile";
-
 export enum Gender {
   'male' = 'M',
   'female' = 'F',
@@ -32,7 +30,7 @@ export interface QuizAnswer {
   id: number;
   question: string;
   is_correct: boolean;
-  quiz: number
+  quiz: number;
 }
 
 export interface ClinicalCase {
@@ -49,14 +47,22 @@ export interface ClinicalCase {
   author: number;
 }
 
+export interface UserProfile {
+  id: string;
+  firstname: string;
+  surname: string;
+  role: 'DOCTOR' | 'STUDENT';
+  user_id: string;
+}
+
 export interface UserLoginData {
   email: string;
   password: string;
 }
 
-export type UserRegistrationData =  UserLoginData & {
-  data: Pick<UserProfile, "firstname" | "surname" | "role">
-}
+export type UserRegistrationData = UserLoginData & {
+  data: Omit<UserProfile, 'email' | 'password' | 'id' | 'user_id'>;
+};
 
-export type RegisterFormData = Omit<UserRegistrationData, "data"> & Omit<UserRegistrationData["data"], "role"> 
-
+export type RegisterFormData = Omit<UserRegistrationData, 'data'> &
+  Omit<UserRegistrationData['data'], 'role'>;

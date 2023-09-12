@@ -1,19 +1,18 @@
 import { Button, Flex, Text, VStack, useToast } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import { useFormik } from 'formik';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import * as Yup from 'yup';
 import { CustomInput } from '../../../components/inputs/CustomInput';
 import { useAuth } from '../../../components/providers/AuthProvider';
-import { RegisterFormData, UserLoginData, UserRegistrationData } from '../../../types/types';
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import { UserProfile } from '@/types/profile';
+import { RegisterFormData } from '../../../types/types';
 
 export default function Register() {
   const schema = Yup.object<RegisterFormData>({
-    email: Yup.string().required("Controlla il campo!"),
-    password: Yup.string().required("Controlla il campo!"),
-    firstname: Yup.string().required("Controlla il campo!"),
-    surname: Yup.string().required("Controlla il campo!"),
+    email: Yup.string().required('Controlla il campo!'),
+    password: Yup.string().required('Controlla il campo!'),
+    firstname: Yup.string().required('Controlla il campo!'),
+    surname: Yup.string().required('Controlla il campo!'),
   });
 
   const {
@@ -22,25 +21,25 @@ export default function Register() {
     handleBlur,
     touched,
     errors,
-    isSubmitting
+    isSubmitting,
   } = useFormik<RegisterFormData>({
     initialValues: {
-      email: "",
-      password: "",
-      firstname: "",
-      surname: ""
+      email: '',
+      password: '',
+      firstname: '',
+      surname: '',
     },
     validationSchema: schema,
     onSubmit: async input => {
-
       const { error } = await register({
         email: input.email!,
         password: input.password!,
+
         data: {
           firstname: input.firstname!,
           surname: input.surname!,
-          role: "DOCTOR"
-        }
+          role: 'DOCTOR',
+        },
       });
 
       toast({
@@ -53,11 +52,10 @@ export default function Register() {
       if (!error) {
         navigate('/');
       }
-    }
+    },
   });
 
   const toast = useToast();
-
 
   const { register } = useAuth();
   const navigate = useNavigate();

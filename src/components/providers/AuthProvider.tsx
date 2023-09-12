@@ -32,7 +32,8 @@ interface AuthContextContent {
 }
 
 const AuthContext = createContext<AuthContextContent>({
-  register: (data: UserRegistrationData) => supabase.auth.signUp(data),
+  register: (data: UserRegistrationData) =>
+    supabase.auth.signUp(data, { data: data.data }),
   login: (data: UserLoginData) => supabase.auth.signIn(data),
   edit: (data: UserRegistrationData) => supabase.auth.update(data),
   logout: () => supabase.auth.signOut(),
@@ -85,9 +86,9 @@ export function AuthProvider({
   }, []);
 
   const value: AuthContextContent = {
-    register: (data: UserLoginData) => supabase.auth.signUp(data),
+    register: (data: UserRegistrationData) => supabase.auth.signUp(data),
     login: (data: UserLoginData) => supabase.auth.signIn(data),
-    edit: (data: UserLoginData) => supabase.auth.update(data),
+    edit: (data: UserRegistrationData) => supabase.auth.update(data),
     logout: () => supabase.auth.signOut(),
     user,
   };

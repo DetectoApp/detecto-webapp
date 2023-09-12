@@ -3,20 +3,24 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { CustomInput } from '../../../components/inputs/CustomInput';
 import { useAuth } from '../../../components/providers/AuthProvider';
-import { AvatarTypes, RegisterFormData, UserLoginData } from '../../../types/types';
+import {
+  AvatarTypes,
+  RegisterFormData,
+  UserLoginData,
+} from '../../../types/types';
 import {
   ClinicalCaseAvatar,
   ClinicalCaseAvatarBoxed,
 } from '../../../components/ClinicalCaseAvatar';
-import { useFormik } from "formik";
-import * as Yup from "yup";
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
 export default function Profile() {
   const schema = Yup.object<RegisterFormData>({
-    email: Yup.string().required("Controlla il campo!"),
-    password: Yup.string().required("Controlla il campo!"),
-    firstname: Yup.string().required("Controlla il campo!"),
-    surname: Yup.string().required("Controlla il campo!"),
+    email: Yup.string().required('Controlla il campo!'),
+    password: Yup.string().required('Controlla il campo!'),
+    firstname: Yup.string().required('Controlla il campo!'),
+    surname: Yup.string().required('Controlla il campo!'),
   });
 
   const {
@@ -25,25 +29,24 @@ export default function Profile() {
     handleBlur,
     touched,
     errors,
-    isSubmitting
+    isSubmitting,
   } = useFormik<RegisterFormData>({
     initialValues: {
-      email: "",
-      password: "",
-      firstname: "",
-      surname: ""
+      email: '',
+      password: '',
+      firstname: '',
+      surname: '',
     },
     validationSchema: schema,
     onSubmit: async input => {
-
-      const { error } = await register({
+      const { error } = await edit({
         email: input.email!,
         password: input.password!,
         data: {
           firstname: input.firstname!,
           surname: input.surname!,
-          role: "DOCTOR"
-        }
+          role: 'DOCTOR',
+        },
       });
 
       toast({
@@ -56,13 +59,12 @@ export default function Profile() {
       if (!error) {
         navigate('/');
       }
-    }
+    },
   });
 
   const toast = useToast();
 
-
-  const { register, logout } = useAuth();
+  const { edit, logout } = useAuth();
   const navigate = useNavigate();
 
   return (
@@ -81,9 +83,10 @@ export default function Profile() {
           <CustomInput
             label="Email"
             h="100%"
-                        placeholder="email"
+            placeholder="email"
             autoComplete="email"
-            name="email"errorText={touched.email && errors.email}
+            name="email"
+            errorText={touched.email && errors.email}
             onChange={handleChange}
             onBlur={handleBlur}
             disabled={isSubmitting}
@@ -91,9 +94,8 @@ export default function Profile() {
           <CustomInput
             label="Password"
             h="100%"
-                        placeholder="password"
+            placeholder="password"
             type="password"
-            
             autoComplete="new-password"
             name="password"
             errorText={touched.email && errors.email}
