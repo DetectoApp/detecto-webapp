@@ -2,16 +2,22 @@ import {
   Box,
   Button,
   Checkbox,
-  Image,
-  Input,
   Select,
   Skeleton,
+  Text,
   VStack,
   useToast,
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { useRealtime } from 'react-supabase';
+import { CustomInput } from '../../../components/inputs/CustomInput';
 import supabase from '../../../supabase';
+import {
+  BodyDistrict,
+  ExamTypes,
+  InstrumentalExamName,
+  LaboratoryExamName,
+} from '../../../types/enums';
 import {
   AllOfExam,
   InstrumentalExam,
@@ -19,13 +25,6 @@ import {
   ObjectiveExam,
 } from '../../../types/examTypes';
 import { ClinicalCase } from '../../../types/types';
-import {
-  ExamTypes,
-  BodyDistrict,
-  InstrumentalExamName,
-  LaboratoryExamName,
-} from '../../../types/enums';
-import { CustomInput } from '../../../components/inputs/CustomInput';
 
 type ClinicalCaseExamInput = AllOfExam & {
   examType: ExamTypes;
@@ -108,7 +107,9 @@ export default function AddClinicalCaseExam() {
   if (!clinicalCases || !clinicalCases.length) {
     return (
       <Box alignItems="center">
-        <Image src={'todo'} mt="30px" maxW="95%" />
+        <Text variant="page_title" mt="30px">
+          Nessun elemento appartenente alla selezione
+        </Text>
       </Box>
     );
   }
@@ -150,7 +151,7 @@ export default function AddClinicalCaseExam() {
         <CustomInput
           label="PLACEHOLDERLABEL"
           h="100%"
-                    placeholder="details"
+          placeholder="details"
           value={exam.details}
           onChange={e => setExam(c => ({ ...c, details: e.target.value }))}
           disabled={loading}
@@ -208,7 +209,7 @@ export default function AddClinicalCaseExam() {
             <CustomInput
               label="PLACEHOLDERLABEL"
               h="100%"
-                            placeholder="media"
+              placeholder="media"
               value={exam.media}
               onChange={e => setExam(c => ({ ...c, media: e.target.value }))}
               disabled={loading}
@@ -238,7 +239,7 @@ export default function AddClinicalCaseExam() {
             <CustomInput
               label="PLACEHOLDERLABEL"
               h="100%"
-                            placeholder="media"
+              placeholder="media"
               value={exam.media}
               onChange={e => setExam(c => ({ ...c, media: e.target.value }))}
               disabled={loading}

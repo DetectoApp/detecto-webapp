@@ -1,21 +1,22 @@
 import {
-  Flex,
-  ModalProps,
-  Text,
-  Image,
   Box,
+  Button,
+  Flex,
+  Image,
   Modal,
   ModalContent,
-  Button,
+  ModalProps,
   Skeleton,
+  Text,
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import { ClinicalCase, Quiz, QuizAnswer } from '../../../../types/types';
-import { Stepper } from '../../../../components/layout/Stepper';
 import { ClinicalCaseAvatar } from '../../../../components/ClinicalCaseAvatar';
-import supabase from '../../../../supabase';
+import { Stepper } from '../../../../components/layout/Stepper';
 import { useCaseExplorationStore } from '../../../../store';
+import supabase from '../../../../supabase';
+import { ClinicalCase, Quiz, QuizAnswer } from '../../../../types/types';
 
+import CrossIcon from '../../../../assets/cross_icon.svg';
 import ExamIcon from '../../../../assets/exam_icon.svg';
 
 export const ClinicalCaseDiagnosisModal = ({
@@ -79,11 +80,12 @@ const QuizDiagnosisStep = ({
   const [availableQuizzes, setAvailableQuizzes] = useState<
     (Quiz & { answers: QuizAnswer[] })[]
   >([]);
-  const givenQuizAnswers = useCaseExplorationStore(s => s.quizAnswers);
+
   const { quizAnswers, setQuizAnswer } = useCaseExplorationStore(s => ({
     quizAnswers: s.quizAnswers,
     setQuizAnswer: s.setQuizAnswer,
   }));
+
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -126,7 +128,7 @@ const QuizDiagnosisStep = ({
 
   const onConfirmButton = () => {
     if (currentQuizAnswer) {
-      if (quizIndex === availableQuizzes.length) onLastConfirm();
+      if (quizIndex === availableQuizzes.length - 1) onLastConfirm();
       else setQuizIndex(i => i++);
     }
   };
@@ -144,22 +146,37 @@ const QuizDiagnosisStep = ({
   if (!availableQuizzes.length) {
     return (
       <Box alignItems="center">
-        <Image src={'todo'} mt="30px" maxW="95%" />
+        <Text variant="page_title" mt="30px">
+          Nessun elemento appartenente alla selezione
+        </Text>
       </Box>
     );
   }
 
   return (
     <Flex align="center" direction="column">
-      <Stepper steps={availableQuizzes} currentStep={quizIndex} />
+      <Flex gap="2" mb="4" w="100%">
+        <Image
+          w="64px"
+          h="64px"
+          src={CrossIcon}
+          onClick={() => alert('TODO')}
+        />
+        <Stepper steps={availableQuizzes} currentStep={quizIndex} />
+      </Flex>
       <Text>{currentQuiz.question}</Text>
       {currentQuiz.answers.map(a => {
         return (
           <Button
             onClick={() => setQuizAnswer(currentQuiz.id.toString(), a)}
-            disabled={!!currentQuizAnswer?.id && currentQuizAnswer.id !== a.id}
+            disabled={!!currentQuizAnswer}
+            variant={
+              currentQuizAnswer && currentQuizAnswer.id !== a.id
+                ? 'risen'
+                : 'risen_secondary'
+            }
           >
-            {a.question}
+            {a.text}
           </Button>
         );
       })}
@@ -208,7 +225,7 @@ const FinishedDiagnosisStep = ({
             mb="4"
             borderRadius="16px"
           >
-            <Text variant="regular_20_1p">CACCASBURO</Text>
+            <Text variant="regular_20_1p">ye</Text>
             <Flex ml="auto" gap="2">
               <Button
                 onClick={() => {
@@ -233,7 +250,7 @@ const FinishedDiagnosisStep = ({
           YEYEYEYYEYEY
         </Flex>
       )}
-      <Button onClick={onChangeTab}>Vai da mammeta</Button>
+      <Button onClick={onChangeTab}>Vai da n'altra parte</Button>
     </Flex>
   );
 };

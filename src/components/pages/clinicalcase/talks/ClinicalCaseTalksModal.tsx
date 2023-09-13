@@ -149,7 +149,9 @@ const ClinicalCaseTalksModalList = ({
       <Flex wrap="wrap" mt={8}>
         {!filteredTalks.length ? (
           <Box alignItems="center">
-            <Image src={'todo'} mt="30px" maxW="95%" />
+            <Text variant="page_title" mt="30px">
+              Nessun elemento appartenente alla selezione
+            </Text>
           </Box>
         ) : (
           <Grid
@@ -173,7 +175,7 @@ const ClinicalCaseTalksModalList = ({
                   onClick={() => {
                     setTalk(talk);
                   }}
-                  iconUrl="/assets/talk_icon.svg"
+                  iconUrl={TalkIcon}
                   title={talk.title}
                 />
               );
@@ -246,7 +248,7 @@ const TalkModalDetail = ({
           }}
           variant="risen_secondary"
         >
-          PRESCRIVI
+          CHIEDI
         </Button>
       </Flex>
     </>
@@ -264,7 +266,7 @@ export const ClinicalCaseTalksModal = ({
   return (
     <ModalContainer
       {...modalProps}
-      titleIconUrl="/assets/talk_icon.svg"
+      titleIconUrl={TalkIcon}
       title="Parla col paziente"
       titleBackgroundColor="white"
     >

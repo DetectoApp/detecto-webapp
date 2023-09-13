@@ -28,7 +28,7 @@ export interface Quiz {
 
 export interface QuizAnswer {
   id: number;
-  question: string;
+  text: string;
   is_correct: boolean;
   quiz: number;
 }
@@ -68,6 +68,6 @@ export type RegisterFormData = Omit<UserRegistrationData, 'data'> &
   Omit<UserRegistrationData['data'], 'role'>;
 
 export interface SelectOption {
-  id: number
-  label: string
+  id: number;
+  label: string;
 }

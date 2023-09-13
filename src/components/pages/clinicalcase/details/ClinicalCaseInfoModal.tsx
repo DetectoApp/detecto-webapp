@@ -14,6 +14,7 @@ import {
 } from '../../../ClinicalCaseAvatar';
 import { ModalContainer } from '../../../ModalComponents';
 import { ClinicalCaseGender } from '../../../../components/ClinicalCaseGender';
+import PatientIcon from '../../../../assets/patient_icon.svg';
 
 export const ClinicalCaseInfoModal = ({
   clinicalCase,
@@ -22,7 +23,7 @@ export const ClinicalCaseInfoModal = ({
   return (
     <ModalContainer
       {...modalProps}
-      titleIconUrl="/assets/patient_icon.svg"
+      titleIconUrl={PatientIcon}
       title="Info paziente"
       titleBackgroundColor="accent"
     >
@@ -39,21 +40,21 @@ export const ClinicalCaseInfoModal = ({
         </Text>
         <Flex w="100%" gap="2" mb="2">
           <InfoBox
-            iconUrl="/assets/patient_icon.svg"
+            iconUrl={PatientIcon}
             title="Peso"
             flex="1"
             text={clinicalCase.patient_weight.toString()}
           />
 
           <InfoBox
-            iconUrl="/assets/patient_icon.svg"
+            iconUrl={PatientIcon}
             title="Altezza"
             flex="1"
             text={clinicalCase.patient_height.toString()}
           />
         </Flex>
         <InfoBox
-          iconUrl="/assets/patient_icon.svg"
+          iconUrl={PatientIcon}
           title="Dettagli"
           w="100%"
           text={clinicalCase.brief_description}

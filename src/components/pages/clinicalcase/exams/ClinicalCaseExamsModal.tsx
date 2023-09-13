@@ -22,6 +22,7 @@ import supabase from '../../../../supabase';
 import { ExamTypes } from '../../../../types/enums';
 import { useCaseExplorationStore } from '../../../../store';
 
+import TalkIcon from '../../../../assets/talk_icon.svg';
 import ExamIcon from '../../../../assets/exam_icon.svg';
 import BackIcon from '../../../../assets/back.svg';
 
@@ -152,7 +153,9 @@ const ClinicalCaseExamsModalList = ({
       <Flex wrap="wrap" mt={8}>
         {!filteredExams.length ? (
           <Box alignItems="center">
-            <Image src={'todo'} mt="30px" maxW="95%" />
+            <Text variant="page_title" mt="30px">
+              Nessun elemento appartenente alla selezione
+            </Text>
           </Box>
         ) : (
           <Grid
@@ -176,7 +179,7 @@ const ClinicalCaseExamsModalList = ({
                   onClick={() => {
                     setExam(exam);
                   }}
-                  iconUrl="/assets/talk_icon.svg"
+                  iconUrl={TalkIcon}
                   title={exam.title}
                 />
               );
@@ -263,7 +266,7 @@ export const ClinicalCaseExamsModal = ({
   return (
     <ModalContainer
       {...modalProps}
-      titleIconUrl="/assets/exam_icon.svg"
+      titleIconUrl={ExamIcon}
       title="Prescrivi esami"
       titleBackgroundColor="secondary.1000"
     >

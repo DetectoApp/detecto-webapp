@@ -2,16 +2,17 @@ import {
   Box,
   Button,
   Checkbox,
-  Image,
-  Input,
   Select,
   Skeleton,
+  Text,
   VStack,
   useToast,
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { useRealtime } from 'react-supabase';
+import { CustomInput } from '../../../components/inputs/CustomInput';
 import supabase from '../../../supabase';
+import { BodyDistrict, SpecialistType, TalkTypes } from '../../../types/enums';
 import {
   AllOfTalk,
   PreviousVisit,
@@ -19,8 +20,6 @@ import {
   Symptom,
 } from '../../../types/talkTypes';
 import { ClinicalCase } from '../../../types/types';
-import { BodyDistrict, SpecialistType, TalkTypes } from '../../../types/enums';
-import { CustomInput } from '../../../components/inputs/CustomInput';
 
 type ClinicalCaseTalkInput = AllOfTalk & {
   talkType: TalkTypes;
@@ -104,7 +103,9 @@ export default function AddClinicalCaseTalk() {
   if (!clinicalCases || !clinicalCases.length) {
     return (
       <Box alignItems="center">
-        <Image src={'todo'} mt="30px" maxW="95%" />
+        <Text variant="page_title" mt="30px">
+          Nessun elemento appartenente alla selezione
+        </Text>
       </Box>
     );
   }
@@ -175,7 +176,7 @@ export default function AddClinicalCaseTalk() {
             <CustomInput
               label="PLACEHOLDERLABEL"
               h="100%"
-                            placeholder="diagnosis_short"
+              placeholder="diagnosis_short"
               value={talk.diagnosis_short}
               onChange={e =>
                 setTalk(c => ({ ...c, diagnosis_short: e.target.value }))
@@ -185,7 +186,7 @@ export default function AddClinicalCaseTalk() {
             <CustomInput
               label="PLACEHOLDERLABEL"
               h="100%"
-                            placeholder="diagnosis_reason"
+              placeholder="diagnosis_reason"
               value={talk.diagnosis_reason}
               onChange={e =>
                 setTalk(c => ({ ...c, diagnosis_reason: e.target.value }))
@@ -198,7 +199,7 @@ export default function AddClinicalCaseTalk() {
             <CustomInput
               label="PLACEHOLDERLABEL"
               h="100%"
-                            placeholder="family_member_grade"
+              placeholder="family_member_grade"
               value={talk.family_member_grade}
               onChange={e =>
                 setTalk(c => ({ ...c, family_member_grade: e.target.value }))
@@ -208,7 +209,7 @@ export default function AddClinicalCaseTalk() {
             <CustomInput
               label="PLACEHOLDERLABEL"
               h="100%"
-                            placeholder="health_state"
+              placeholder="health_state"
               value={talk.health_state}
               onChange={e =>
                 setTalk(c => ({ ...c, health_state: e.target.value }))
@@ -218,7 +219,7 @@ export default function AddClinicalCaseTalk() {
             <CustomInput
               label="PLACEHOLDERLABEL"
               h="100%"
-                            placeholder="details"
+              placeholder="details"
               value={talk.details}
               onChange={e => setTalk(c => ({ ...c, details: e.target.value }))}
               disabled={loading}
@@ -246,7 +247,7 @@ export default function AddClinicalCaseTalk() {
             <CustomInput
               label="PLACEHOLDERLABEL"
               h="100%"
-                            placeholder="symptom"
+              placeholder="symptom"
               value={talk.symptom}
               onChange={e => setTalk(c => ({ ...c, symptom: e.target.value }))}
               disabled={loading}
@@ -254,7 +255,7 @@ export default function AddClinicalCaseTalk() {
             <CustomInput
               label="PLACEHOLDERLABEL"
               h="100%"
-                            placeholder="symptom_detail"
+              placeholder="symptom_detail"
               value={talk.symptom_details}
               onChange={e =>
                 setTalk(c => ({ ...c, symptom_details: e.target.value }))
@@ -264,7 +265,7 @@ export default function AddClinicalCaseTalk() {
             <CustomInput
               label="PLACEHOLDERLABEL"
               h="100%"
-                            placeholder="media"
+              placeholder="media"
               value={talk.media}
               onChange={e => setTalk(c => ({ ...c, media: e.target.value }))}
               disabled={loading}

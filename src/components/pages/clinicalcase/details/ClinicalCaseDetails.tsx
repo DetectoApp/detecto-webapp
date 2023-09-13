@@ -58,7 +58,9 @@ export default function ClinicalCaseDetails() {
   if (!clinicalCase) {
     return (
       <Box alignItems="center">
-        <Image src={'todo'} mt="30px" maxW="95%" />
+        <Text variant="page_title" mt="30px">
+          Nessun elemento appartenente alla selezione
+        </Text>
       </Box>
     );
   }
