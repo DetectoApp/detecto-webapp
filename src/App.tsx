@@ -5,6 +5,7 @@ import {
   Outlet,
   Route,
   Routes,
+  useLocation,
 } from 'react-router-dom';
 import AppHeader from './components/layout/AppHeader';
 import ClinicalCaseDetails from './components/pages/clinicalcase/details/ClinicalCaseDetails';
@@ -21,7 +22,15 @@ import { Flex } from '@chakra-ui/react';
 import './styles.css';
 
 export const AuthedOutlet = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
-  return isLoggedIn ? <Outlet /> : <Navigate to={'/login'} />;
+  const location = useLocation();
+
+  return isLoggedIn ? (
+    <Outlet />
+  ) : (
+    <Navigate
+      to={location.pathname ? `/login?from=${location.pathname}` : '/login'}
+    />
+  );
 };
 
 export default function App() {

@@ -66,3 +66,8 @@ export type UserRegistrationData = UserLoginData & {
 
 export type RegisterFormData = Omit<UserRegistrationData, 'data'> &
   Omit<UserRegistrationData['data'], 'role'>;
+
+export interface SelectOption {
+  id: number
+  label: string
+}

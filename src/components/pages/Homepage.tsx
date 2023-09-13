@@ -1,17 +1,18 @@
 import { Button, Flex, Text, VStack } from '@chakra-ui/react';
 import { useFormik } from 'formik';
 import React from 'react';
-import { Link } from 'react-router-dom';
-import * as Yup from "yup";
+import { Link, useNavigate } from 'react-router-dom';
+import * as Yup from 'yup';
 import { getEmailError } from '../../utils/validation';
 import { CustomInput } from '../inputs/CustomInput';
 import { useAuth } from '../providers/AuthProvider';
 
 export default function Homepage() {
   const { logout } = useAuth();
+  const navigate = useNavigate();
 
   const schema = Yup.object<{ email: string }>({
-    email: Yup.string().required("Controlla il campo!"),
+    email: Yup.string().required('Controlla il campo!'),
   });
 
   const {
@@ -20,16 +21,16 @@ export default function Homepage() {
     handleBlur,
     touched,
     errors,
-    isSubmitting
+    isSubmitting,
   } = useFormik<{ email: string }>({
     initialValues: {
-      email: "",
-
+      email: '',
     },
     validationSchema: schema,
-    onSubmit: async e => { }
+    onSubmit: async e => {
+      navigate(`/register?email=${e.email}`);
+    },
   });
-
 
   return (
     <Flex direction="column" mt="8">
@@ -41,13 +42,20 @@ export default function Homepage() {
         in modo semplice.
       </Text>
       <VStack w="327px">
-        <CustomInput label="Email" mb="2" name="email" errorText={touched.email && errors.email}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          disabled={isSubmitting} />
-        <Button variant="risen_secondary" w="100%">
-          REGISTER
-        </Button>
+        <form onSubmit={handleSubmit}>
+          <CustomInput
+            label="Email"
+            mb="2"
+            name="email"
+            errorText={touched.email && errors.email}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            disabled={isSubmitting}
+          />
+          <Button variant="risen_secondary" w="100%" type="submit">
+            REGISTER
+          </Button>
+        </form>
       </VStack>
       <Flex mt="12" wrap="wrap" gap="4">
         <Link to="/list">

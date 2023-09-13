@@ -4,18 +4,21 @@ import { useNavigate } from 'react-router-dom';
 import { CustomInput } from '../../../components/inputs/CustomInput';
 import { useAuth } from '../../../components/providers/AuthProvider';
 import { UserLoginData } from '../../../types/types';
-import { useFormik } from "formik";
-import * as Yup from "yup";
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { useQueryParams } from '../../../components/hooks/useQueryParams';
 
 export default function Login() {
+  const query = useQueryParams();
+
   const toast = useToast();
 
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const schema = Yup.object<UserLoginData>({
-    email: Yup.string().required("Controlla il campo!"),
-    password: Yup.string().required("Controlla il campo!"),
+    email: Yup.string().required('Controlla il campo!'),
+    password: Yup.string().required('Controlla il campo!'),
   });
 
   const {
@@ -24,33 +27,31 @@ export default function Login() {
     handleBlur,
     touched,
     errors,
-    isSubmitting
+    isSubmitting,
   } = useFormik<UserLoginData>({
     initialValues: {
-      email: "",
-      password: ""
+      email: '',
+      password: '',
     },
     validationSchema: schema,
     onSubmit: async e => {
-
       const { error } = await login({
         email: e.email!,
         password: e.password!,
       });
 
       toast({
-        title: error?.message || 'Task added!',
+        title: error?.message || 'Login successful!',
         position: 'top',
         status: error ? 'error' : 'success',
         duration: 2000,
         isClosable: true,
       });
       if (!error) {
-        navigate('/');
+        navigate(query.get('from') ?? '/');
       }
-    }
+    },
   });
-
 
   return (
     <Flex mt="10" direction="column">
@@ -63,9 +64,10 @@ export default function Login() {
           <CustomInput
             label="Email"
             h="100%"
-                        placeholder="email"
+            placeholder="email"
             autoComplete="email"
-            name="email" errorText={touched.email && errors.email}
+            name="email"
+            errorText={touched.email && errors.email}
             onChange={handleChange}
             onBlur={handleBlur}
             disabled={isSubmitting}
@@ -73,7 +75,7 @@ export default function Login() {
           <CustomInput
             label="Password"
             h="100%"
-                        placeholder="password"
+            placeholder="password"
             type="password"
             autoComplete="current-password"
             name="password"

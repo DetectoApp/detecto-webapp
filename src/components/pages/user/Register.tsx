@@ -1,13 +1,16 @@
 import { Button, Flex, Text, VStack, useToast } from '@chakra-ui/react';
 import { useFormik } from 'formik';
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import * as Yup from 'yup';
 import { CustomInput } from '../../../components/inputs/CustomInput';
 import { useAuth } from '../../../components/providers/AuthProvider';
 import { RegisterFormData } from '../../../types/types';
+import { useQueryParams } from '../../../components/hooks/useQueryParams';
 
 export default function Register() {
+  const query = useQueryParams();
+
   const schema = Yup.object<RegisterFormData>({
     email: Yup.string().required('Controlla il campo!'),
     password: Yup.string().required('Controlla il campo!'),
@@ -22,13 +25,15 @@ export default function Register() {
     touched,
     errors,
     isSubmitting,
+    values,
   } = useFormik<RegisterFormData>({
     initialValues: {
-      email: '',
+      email: query.get('email') ?? '',
       password: '',
       firstname: '',
       surname: '',
     },
+    enableReinitialize: true,
     validationSchema: schema,
     onSubmit: async input => {
       const { error } = await register({
@@ -76,6 +81,7 @@ export default function Register() {
             autoComplete="email"
             errorText={touched.email && errors.email}
             onChange={handleChange}
+            value={values.email}
             onBlur={handleBlur}
             disabled={isSubmitting}
           />
@@ -88,6 +94,7 @@ export default function Register() {
             autoComplete="new-password"
             errorText={touched.password && errors.password}
             onChange={handleChange}
+            value={values.password}
             onBlur={handleBlur}
             disabled={isSubmitting}
           />
@@ -99,6 +106,7 @@ export default function Register() {
             autoComplete="firstname"
             errorText={touched.firstname && errors.firstname}
             onChange={handleChange}
+            value={values.firstname}
             onBlur={handleBlur}
             disabled={isSubmitting}
           />
@@ -111,6 +119,7 @@ export default function Register() {
             autoComplete="new-password"
             errorText={touched.surname && errors.surname}
             onChange={handleChange}
+            value={values.surname}
             onBlur={handleBlur}
             disabled={isSubmitting}
           />

@@ -35,7 +35,7 @@ export const CustomInput = (
     setType(props.type);
   }, [props.type]);
 
-  console.log({ props }, props.errorText);
+  console.log(props.label, props.errorText, { props }, props.value);
 
   return (
     <FormControl isInvalid={props.isInvalid || !!props.errorText}>
