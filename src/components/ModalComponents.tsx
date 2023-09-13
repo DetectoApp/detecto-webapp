@@ -8,6 +8,7 @@ import {
   ModalOverlay,
   ModalProps,
   Text,
+  ThemingProps,
 } from '@chakra-ui/react';
 import React from 'react';
 
@@ -68,15 +69,22 @@ export const ListItemButton = ({
   title,
   onClick,
   pallino,
+  variant,
 }: {
   iconUrl: string;
   title: string;
   onClick?: React.MouseEventHandler<HTMLDivElement>;
   pallino: string | undefined;
+  variant?: ThemingProps<'button'>['variant'];
 }) => {
   return (
     <Flex direction="column" align="center" onClick={onClick}>
-      <Button variant="risen_secondary" h="104px" w="104px" position="relative">
+      <Button
+        variant={variant ?? 'risen_secondary'}
+        h="104px"
+        w="104px"
+        position="relative"
+      >
         {pallino ? (
           <Box
             position="absolute"

@@ -176,6 +176,7 @@ const ClinicalCaseTalksModalList = ({
                     setTalk(talk);
                   }}
                   iconUrl={TalkIcon}
+                  variant={'risen'}
                   title={talk.title}
                 />
               );
@@ -211,14 +212,14 @@ const TalkModalDetail = ({
         }}
       />
       <Flex mt={2} mb={4} w="100%" align="center" gap="2">
-        <Button variant="risen_secondary" w="64px" h="64px">
+        <Button variant="risen" w="64px" h="64px">
           <Image src={TalkIcon} />
         </Button>
         <Text variant="bold_28_1p">{talk.title}</Text>
       </Flex>
 
       <Box
-        backgroundColor="secondary.1000"
+        backgroundColor="white"
         borderColor="primary"
         borderWidth="4px"
         p="4"

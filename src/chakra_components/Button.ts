@@ -26,7 +26,7 @@ export const Button = defineStyleConfig({
 
       borderTop: '4px',
       borderRight: '4px',
-      borderBottom: '4px',
+      borderBottom: '8px',
       borderLeft: '4px',
 
       transition: 'top 0.3s, border-bottom 0.3s, ' + hoverColorTransition,
@@ -46,7 +46,7 @@ export const Button = defineStyleConfig({
 
       borderTop: '4px',
       borderRight: '4px',
-      borderBottom: '4px',
+      borderBottom: '8px',
       borderLeft: '4px',
 
       transition: 'top 0.3s, border-bottom 0.3s, ' + hoverColorTransition,
@@ -66,7 +66,7 @@ export const Button = defineStyleConfig({
 
       borderTop: '4px',
       borderRight: '4px',
-      borderBottom: '4px',
+      borderBottom: '8px',
       borderLeft: '4px',
 
       transition: 'top 0.3s, border-bottom 0.3s, ' + hoverColorTransition,
@@ -86,7 +86,7 @@ export const Button = defineStyleConfig({
 
       borderTop: '4px',
       borderRight: '4px',
-      borderBottom: '4px',
+      borderBottom: '8px',
       borderLeft: '4px',
 
       transition: 'top 0.3s, border-bottom 0.3s, ' + hoverColorTransition,
