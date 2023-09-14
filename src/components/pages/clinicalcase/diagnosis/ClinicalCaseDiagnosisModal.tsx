@@ -9,17 +9,19 @@ import {
   Skeleton,
   Text,
 } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ClinicalCaseAvatar } from '../../../../components/ClinicalCaseAvatar';
 import { Stepper } from '../../../../components/layout/Stepper';
 import { useCaseExplorationStore } from '../../../../store';
 import supabase from '../../../../supabase';
 import { ClinicalCase, Quiz, QuizAnswer } from '../../../../types/types';
-
+import { Link, useNavigate } from 'react-router-dom';
+import { PercentageBarItem } from '../../../../components/layout/PercentageBar';
+import { ExpandableLogoContainer } from '../../../../components/ModalComponents';
 import CrossIcon from '../../../../assets/cross_icon.svg';
 import ExamIcon from '../../../../assets/exam_icon.svg';
-import { Link, useNavigate } from 'react-router-dom';
-import { ExpandableLogoContainer } from '../../../../components/ModalComponents';
+import TalkIcon from '../../../../assets/talk_icon.svg';
+import DiagnosisIcon from '../../../../assets/diagnosis_icon.svg';
 
 export const ClinicalCaseDiagnosisModal = ({
   clinicalCase,
@@ -65,7 +67,7 @@ export const ClinicalCaseDiagnosisModal = ({
 
   return (
     <Modal isOpen onClose={() => {}} {...modalProps} size="full">
-      <ModalContent position="relative" bg="white" h="100vh">
+      <ModalContent position="relative" bg="white" minH="100vh">
         {getPanelToRender()}
       </ModalContent>
     </Modal>
@@ -204,22 +206,56 @@ const FinishedDiagnosisStep = ({
   onChangeTab: () => void;
   clinicalCase: ClinicalCase;
 }) => {
+  const caseExplorationStatus = useCaseExplorationStore();
+  const { talkScore, examScore, diagnosisScore } = useMemo<{
+    talkScore: number;
+    examScore: number;
+    diagnosisScore: number;
+  }>(() => {
+    const talkStatuses = Object.values(caseExplorationStatus.talkStatuses);
+    const misleadingTalkStatuses = talkStatuses.filter(t => t === 'IGNORED'); //TODO should be is_misleading
+
+    const examStatuses = Object.values(caseExplorationStatus.examStatuses);
+    const misleadingExamStatuses = examStatuses.filter(t => t === 'IGNORED'); //TODO should be is_misleading
+
+    const diagnosisQuestions = Object.values(caseExplorationStatus.quizAnswers);
+    const correctDiagnosis = diagnosisQuestions.filter(d => d.is_correct);
+
+    let talkScore = talkStatuses.length / misleadingTalkStatuses.length;
+    let examScore = examStatuses.length / misleadingExamStatuses.length;
+    let diagnosisScore = correctDiagnosis.length / diagnosisQuestions.length;
+
+    if (isNaN(talkScore)) talkScore = 1;
+    talkScore *= 100;
+    if (isNaN(examScore)) examScore = 1;
+    examScore *= 100;
+    if (isNaN(diagnosisScore)) diagnosisScore = 1;
+    diagnosisScore *= 100;
+
+    return {
+      talkScore,
+      examScore,
+      diagnosisScore,
+    };
+  }, [caseExplorationStatus]);
+
   return (
     <Flex align="center" direction="column" h="100%" pb="5" pt="8" px="8">
-      <Text>Caso completato</Text>
+      <Text variant="page_title">Caso completato</Text>
       <ClinicalCaseAvatar
         avatar={clinicalCase.avatar}
-        mt="1.5"
+        mt="5"
         flexGrow="1"
         maxHeight="30vh"
         objectFit="cover"
-        mb="20px"
+        mb="2"
       />
       {step === 'answers' ? (
         <ExpandableLogoContainer
-          title="risoluzione del caso"
-          titleIconUrl={ExamIcon}
+          title="Risoluzione del caso"
+          titleIconUrl={DiagnosisIcon}
           titleBackgroundColor="white"
+          w="100%"
         >
           <Text variant="regular_20_1p">
             {clinicalCase.case_details?.solution ?? 'TODO MANCA A DB'}
@@ -244,18 +280,41 @@ const FinishedDiagnosisStep = ({
           </Flex>
         </ExpandableLogoContainer>
       ) : (
-        <ExpandableLogoContainer
-          title="risoluzione del caso"
-          titleIconUrl={ExamIcon}
-          titleBackgroundColor="white"
+        <Flex
+          direction="column"
+          w="100%"
+          align="center"
+          gap="6"
+          zIndex="1"
+          borderRadius="24px"
+          borderColor="primary"
+          borderWidth="4px"
+          p="20px 24px 20px 40px"
         >
-          <Flex mb={4} w="100%" align="center" gap="2" zIndex="1">
-            pertinenza delle domande pertinenza degli esami pertinenza della
-            diagnosi
-          </Flex>
-        </ExpandableLogoContainer>
+          <PercentageBarItem
+            title="pertinenza delle domande"
+            percentage={talkScore}
+            iconSrc={TalkIcon}
+          />
+          <PercentageBarItem
+            title="pertinenza degli esami"
+            percentage={examScore}
+            iconSrc={ExamIcon}
+            percentageBarProps={{
+              innerProps: { bgColor: 'secondary.1000' },
+            }}
+          />
+          <PercentageBarItem
+            title="pertinenza della diagnosi"
+            percentage={diagnosisScore}
+            iconSrc={DiagnosisIcon}
+            percentageBarProps={{
+              innerProps: { bgColor: 'error' },
+            }}
+          />
+        </Flex>
       )}
-      <Flex mt="1.5" justify="space-between" w="100%">
+      <Flex mt="5" justify="space-between" w="100%">
         <Button variant="risen" onClick={onChangeTab}>
           {step === 'answers' ? 'GUARDA IL PUNTEGGIO' : 'CONTROLLA LE RISPOSTE'}
         </Button>

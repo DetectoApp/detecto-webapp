@@ -7,6 +7,7 @@ import {
   ModalContent,
   ModalOverlay,
   ModalProps,
+  StackProps,
   Text,
   ThemingProps,
   VStack,
@@ -29,9 +30,10 @@ export const ExpandableLogoContainer = ({
   titleBackgroundColor,
   children,
   onClose,
-}: ExpandableLogoContainerProps) => {
+  ...stackProps
+}: ExpandableLogoContainerProps & StackProps) => {
   return (
-    <VStack>
+    <VStack {...stackProps}>
       <Flex
         w="100%"
         borderRadius="24px"
@@ -41,13 +43,14 @@ export const ExpandableLogoContainer = ({
         align="center"
         p="20px 24px 20px 40px"
         position="relative"
-        top="48px"
+        top="12"
+        mt="-12"
       >
-        <Image src={titleIconUrl} mr="2" />
+        <Image w="12" h="12" src={titleIconUrl} mr="2" />
         <Text variant="bold_24_1p" mr="auto">
           {title}
         </Text>
-        <Image src={CrossIcon} onClick={onClose} />
+        {onClose ? <Image src={CrossIcon} onClick={onClose} /> : null}
       </Flex>
       <Flex
         w="100%"
