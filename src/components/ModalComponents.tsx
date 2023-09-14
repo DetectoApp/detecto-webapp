@@ -9,16 +9,62 @@ import {
   ModalProps,
   Text,
   ThemingProps,
+  VStack,
 } from '@chakra-ui/react';
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 import CrossIcon from '../assets/cross_icon.svg';
 
-export interface ModalContainerAuxProps {
+export interface ExpandableLogoContainerProps {
   titleIconUrl: string;
   title: string;
   titleBackgroundColor: string;
+  children: ReactNode;
+  onClose?: () => void;
 }
+
+export const ExpandableLogoContainer = ({
+  titleIconUrl,
+  title,
+  titleBackgroundColor,
+  children,
+  onClose,
+}: ExpandableLogoContainerProps) => {
+  return (
+    <VStack>
+      <Flex
+        w="100%"
+        borderRadius="24px"
+        borderColor="primary"
+        borderWidth="4px"
+        backgroundColor={titleBackgroundColor}
+        align="center"
+        p="20px 24px 20px 40px"
+        position="relative"
+        top="48px"
+      >
+        <Image src={titleIconUrl} mr="2" />
+        <Text variant="bold_24_1p" mr="auto">
+          {title}
+        </Text>
+        <Image src={CrossIcon} onClick={onClose} />
+      </Flex>
+      <Flex
+        w="100%"
+        borderRadius="24px"
+        borderColor="primary"
+        borderWidth="4px"
+        paddingTop="50px"
+        direction="column"
+        bg="white"
+      >
+        <Flex py="4" px="9" direction="column">
+          {children}
+        </Flex>
+      </Flex>
+    </VStack>
+  );
+};
 
 export const ModalContainer = ({
   titleIconUrl,
@@ -26,39 +72,20 @@ export const ModalContainer = ({
   children,
   titleBackgroundColor,
   ...modalProps
-}: ModalContainerAuxProps & ModalProps) => {
+}: ExpandableLogoContainerProps & ModalProps) => {
   return (
     <Modal {...modalProps}>
       <ModalOverlay />
       <ModalContent position="relative" bg="transparent">
-        <Flex
-          borderRadius="24px"
-          borderColor="primary"
-          borderWidth="4px"
-          backgroundColor={titleBackgroundColor}
-          align="center"
-          p="20px 24px 20px 40px"
-          position="relative"
-          top="48px"
-        >
-          <Image src={titleIconUrl} mr="2" />
-          <Text variant="bold_24_1p" mr="auto">
-            {title}
-          </Text>
-          <Image src={CrossIcon} onClick={modalProps.onClose} />
-        </Flex>
-        <Flex
-          borderRadius="24px"
-          borderColor="primary"
-          borderWidth="4px"
-          paddingTop="50px"
-          direction="column"
-          bg="white"
-        >
-          <Flex py="4" px="9" direction="column">
-            {children}
-          </Flex>
-        </Flex>
+        <ExpandableLogoContainer
+          {...{
+            titleIconUrl,
+            title,
+            children,
+            titleBackgroundColor,
+            onClose: modalProps.onClose,
+          }}
+        />
       </ModalContent>
     </Modal>
   );

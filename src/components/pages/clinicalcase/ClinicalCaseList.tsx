@@ -1,29 +1,34 @@
-import {
-  ClinicalCaseAvatar,
-  ClinicalCaseAvatarBoxed,
-} from '../../ClinicalCaseAvatar';
+import supabase from '../../../supabase';
+import { Box, Button, Flex, Grid, Skeleton, Text } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ClinicalCase } from '../../../types/types';
-import {
-  Box,
-  VStack,
-  Image,
-  Skeleton,
-  Text,
-  Flex,
-  Button,
-  Grid,
-} from '@chakra-ui/react';
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useRealtime } from 'react-supabase';
+import { ClinicalCaseAvatarBoxed } from '../../ClinicalCaseAvatar';
 
 export default function ClinicalCaseList() {
-  const [result, reexecute] = useRealtime<ClinicalCase>('clinical_case');
-  const { data: clinicalCases, error, fetching } = result;
+  const [clinicalCases, setClinicalCase] = useState<ClinicalCase[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    const fetchClinicalCases = async () => {
+      const { data, error: clinicalCaseError } = await supabase
+        .from<ClinicalCase>('clinical_case')
+        .select(
+          `*, case_details:case_details_id(*, specialization:specialization_id(*))`
+        );
+      if (clinicalCaseError) {
+        console.log(clinicalCaseError);
+      }
+      setClinicalCase(data ?? []);
+      setLoading(false);
+    };
+
+    fetchClinicalCases();
+  }, []);
 
   const navigate = useNavigate();
 
-  if (fetching) {
+  if (loading) {
     return (
       <Skeleton
         width={{ base: '90vw', sm: '80vw', lg: '50vw', xl: '30vw' }}
@@ -78,7 +83,8 @@ export default function ClinicalCaseList() {
                 height="40px"
               >
                 <Text variant="specialty_name_list">
-                  {clinicalCase.specialization}
+                  {clinicalCase.case_details?.specialization.name ??
+                    'TODO MANCA A DB'}
                 </Text>
               </Flex>
             </Flex>

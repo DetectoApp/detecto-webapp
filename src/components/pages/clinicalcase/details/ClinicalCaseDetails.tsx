@@ -1,25 +1,23 @@
-import supabase from '../../../../supabase';
 import { Box, Button, Flex, Image, Skeleton, Text } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { ClinicalCase } from '../../../../types/types';
-import { ClinicalCaseAvatar } from '../../../ClinicalCaseAvatar';
-import { ClinicalCaseInfoModal } from './ClinicalCaseInfoModal';
-import { ClinicalCaseExamsModal } from '../exams/ClinicalCaseExamsModal';
-import { ClinicalCaseTalksModal } from '../talks/ClinicalCaseTalksModal';
-import { ClinicalCaseDiagnosisModal } from '../diagnosis/ClinicalCaseDiagnosisModal';
+import { Link, useParams } from 'react-router-dom';
+import BackIcon from '../../../../assets/back.svg';
 import CrossIcon from '../../../../assets/cross_icon.svg';
-import TalkIcon from '../../../../assets/talk_icon.svg';
 import ExamIcon from '../../../../assets/exam_icon.svg';
 import PatientIcon from '../../../../assets/patient_icon.svg';
-import BackIcon from '../../../../assets/back.svg';
+import TalkIcon from '../../../../assets/talk_icon.svg';
+import supabase from '../../../../supabase';
+import { ClinicalCase } from '../../../../types/types';
+import { ClinicalCaseAvatar } from '../../../ClinicalCaseAvatar';
+import { ClinicalCaseDiagnosisModal } from '../diagnosis/ClinicalCaseDiagnosisModal';
+import { ClinicalCaseExamsModal } from '../exams/ClinicalCaseExamsModal';
+import { ClinicalCaseTalksModal } from '../talks/ClinicalCaseTalksModal';
+import { ClinicalCaseInfoModal } from './ClinicalCaseInfoModal';
 
 export default function ClinicalCaseDetails() {
   const { id } = useParams<{ id: string }>();
   const [clinicalCase, setClinicalCase] = useState<ClinicalCase | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-
-  const navigate = useNavigate();
 
   const [modalShowing, setModalShowing] = useState<
     'talk' | 'exam' | 'info' | 'diagnosis' | undefined
@@ -105,12 +103,9 @@ export default function ClinicalCaseDetails() {
   return (
     <Flex direction="column" pt="8" pb="5" flexGrow={1}>
       <Flex gap="2" mb="4" align="center">
-        <Image
-          w="64px"
-          h="64px"
-          src={CrossIcon}
-          onClick={() => navigate('/list')}
-        />
+        <Link to="/list">
+          <Image w="64px" h="64px" src={CrossIcon} />
+        </Link>
         <Text variant="patient_name_details">{clinicalCase.patient_name}</Text>
       </Flex>
       <Flex position="relative" flexGrow={1}>

@@ -1,17 +1,25 @@
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Flex, FlexProps } from '@chakra-ui/react';
 import React from 'react';
 
 export const Stepper = ({
   steps,
   currentStep,
+  ...flexProps
 }: {
   steps: any[];
   currentStep: number;
-}) => {
+} & FlexProps) => {
   return (
-    <Flex h="2rem" gap="1rem" w="100%">
+    <Flex gap="30px" {...flexProps}>
       {steps.map((_, index) => (
-        <Box bgColor={index === currentStep ? 'green' : 'black'} flexGrow={1} />
+        <Box
+          h="9px"
+          borderRadius="4.5px"
+          bgColor={
+            index === currentStep ? 'secondary.1000' : 'interactions.500'
+          }
+          flexGrow={1}
+        />
       ))}
     </Flex>
   );

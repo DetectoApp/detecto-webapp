@@ -1,19 +1,11 @@
-import { Button, Flex, Text, VStack, useToast } from '@chakra-ui/react';
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Button, Flex, VStack, useToast } from '@chakra-ui/react';
+import { useFormik } from 'formik';
+import React from 'react';
+import * as Yup from 'yup';
+import { ClinicalCaseAvatarBoxed } from '../../../components/ClinicalCaseAvatar';
 import { CustomInput } from '../../../components/inputs/CustomInput';
 import { useAuth } from '../../../components/providers/AuthProvider';
-import {
-  AvatarTypes,
-  RegisterFormData,
-  UserLoginData,
-} from '../../../types/types';
-import {
-  ClinicalCaseAvatar,
-  ClinicalCaseAvatarBoxed,
-} from '../../../components/ClinicalCaseAvatar';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
+import { AvatarTypes, RegisterFormData } from '../../../types/types';
 
 export default function Profile() {
   const schema = Yup.object<RegisterFormData>({
@@ -56,16 +48,12 @@ export default function Profile() {
         duration: 2000,
         isClosable: true,
       });
-      if (!error) {
-        navigate('/');
-      }
     },
   });
 
   const toast = useToast();
 
   const { edit, logout } = useAuth();
-  const navigate = useNavigate();
 
   return (
     <Flex mt="10" direction="column" flexGrow={1}>

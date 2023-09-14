@@ -33,6 +33,19 @@ export interface QuizAnswer {
   quiz: number;
 }
 
+export interface ClinicalCaseSpecialization {
+  id: number;
+  name: string;
+}
+
+export interface ClinicalCaseDetails {
+  id: number;
+  specialization_id: number;
+  difficulty: number;
+  solution: string;
+  specialization: ClinicalCaseSpecialization;
+}
+
 export interface ClinicalCase {
   id: number;
   patient_name: string;
@@ -41,10 +54,10 @@ export interface ClinicalCase {
   patient_weight: number;
   patient_height: number;
   brief_description: string;
-  specialization: Specialization;
   case_status: CaseStatus;
   avatar: AvatarTypes;
   author: number;
+  case_details?: ClinicalCaseDetails;
 }
 
 export interface UserProfile {

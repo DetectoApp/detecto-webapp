@@ -18,6 +18,8 @@ import { ClinicalCase, Quiz, QuizAnswer } from '../../../../types/types';
 
 import CrossIcon from '../../../../assets/cross_icon.svg';
 import ExamIcon from '../../../../assets/exam_icon.svg';
+import { Link, useNavigate } from 'react-router-dom';
+import { ExpandableLogoContainer } from '../../../../components/ModalComponents';
 
 export const ClinicalCaseDiagnosisModal = ({
   clinicalCase,
@@ -63,7 +65,7 @@ export const ClinicalCaseDiagnosisModal = ({
 
   return (
     <Modal isOpen onClose={() => {}} {...modalProps} size="full">
-      <ModalContent position="relative" bg="white">
+      <ModalContent position="relative" bg="white" h="100vh">
         {getPanelToRender()}
       </ModalContent>
     </Modal>
@@ -77,6 +79,8 @@ const QuizDiagnosisStep = ({
   clinicalCase: ClinicalCase;
   onLastConfirm: () => void;
 }) => {
+  const navigate = useNavigate();
+
   const [availableQuizzes, setAvailableQuizzes] = useState<
     (Quiz & { answers: QuizAnswer[] })[]
   >([]);
@@ -129,7 +133,7 @@ const QuizDiagnosisStep = ({
   const onConfirmButton = () => {
     if (currentQuizAnswer) {
       if (quizIndex === availableQuizzes.length - 1) onLastConfirm();
-      else setQuizIndex(i => i++);
+      else setQuizIndex(i => i + 1);
     }
   };
 
@@ -154,33 +158,37 @@ const QuizDiagnosisStep = ({
   }
 
   return (
-    <Flex align="center" direction="column">
-      <Flex gap="2" mb="4" w="100%">
-        <Image
-          w="64px"
-          h="64px"
-          src={CrossIcon}
-          onClick={() => alert('TODO')}
-        />
-        <Stepper steps={availableQuizzes} currentStep={quizIndex} />
+    <Flex align="center" direction="column" h="100%" pb="5" pt="8" px="8">
+      <Flex gap="30px" w="100%" align="center">
+        <Image w="64px" h="64px" src={CrossIcon} onClick={() => navigate(-1)} />
+        <Stepper steps={availableQuizzes} currentStep={quizIndex} grow="1" />
       </Flex>
-      <Text>{currentQuiz.question}</Text>
-      {currentQuiz.answers.map(a => {
-        return (
-          <Button
-            onClick={() => setQuizAnswer(currentQuiz.id.toString(), a)}
-            disabled={!!currentQuizAnswer}
-            variant={
-              currentQuizAnswer && currentQuizAnswer.id !== a.id
-                ? 'risen'
-                : 'risen_secondary'
-            }
-          >
-            {a.text}
-          </Button>
-        );
-      })}
-      <Button onClick={onConfirmButton} disabled={!currentQuizAnswer}>
+      <Text mt="12">{currentQuiz.question}</Text>
+      <Flex align="center" direction="column" mt="10" gap="2" w="100%">
+        {currentQuiz.answers.map(a => {
+          return (
+            <Button
+              key={a.id}
+              width="100%"
+              onClick={() => setQuizAnswer(currentQuiz.id.toString(), a)}
+              disabled={!!currentQuizAnswer}
+              variant={
+                !currentQuizAnswer || currentQuizAnswer.id !== a.id
+                  ? 'risen'
+                  : 'risen_secondary'
+              }
+            >
+              {a.text}
+            </Button>
+          );
+        })}
+      </Flex>
+      <Button
+        mt="auto"
+        ml="auto"
+        onClick={onConfirmButton}
+        disabled={!currentQuizAnswer}
+      >
         Conferma
       </Button>
     </Flex>
@@ -197,60 +205,64 @@ const FinishedDiagnosisStep = ({
   clinicalCase: ClinicalCase;
 }) => {
   return (
-    <Flex align="center" direction="column">
+    <Flex align="center" direction="column" h="100%" pb="5" pt="8" px="8">
       <Text>Caso completato</Text>
-      <Flex position="relative" flexGrow={1}>
-        <ClinicalCaseAvatar
-          avatar={clinicalCase.avatar}
-          w="236px"
-          position="absolute"
-          bottom="0"
-          right="50%"
-          transform="translateX(50%)"
-        />
-      </Flex>
+      <ClinicalCaseAvatar
+        avatar={clinicalCase.avatar}
+        mt="1.5"
+        flexGrow="1"
+        maxHeight="30vh"
+        objectFit="cover"
+        mb="20px"
+      />
       {step === 'answers' ? (
-        <Flex direction="column">
-          <Flex mt={2} mb={4} w="100%" align="center" gap="2">
-            <Button variant="risen_secondary" w="64px" h="64px">
-              <Image src={ExamIcon} />
+        <ExpandableLogoContainer
+          title="risoluzione del caso"
+          titleIconUrl={ExamIcon}
+          titleBackgroundColor="white"
+        >
+          <Text variant="regular_20_1p">
+            {clinicalCase.case_details?.solution ?? 'TODO MANCA A DB'}
+          </Text>
+          <Flex ml="auto" gap="2">
+            <Button
+              variant="risen"
+              onClick={() => {
+                alert('TODO');
+              }}
+            >
+              NON CHIARO
             </Button>
-            <Text variant="bold_28_1p">Risoluzione del caso</Text>
-          </Flex>{' '}
-          <Box
-            backgroundColor="secondary.1000"
-            borderColor="primary"
-            borderWidth="4px"
-            p="4"
-            mb="4"
-            borderRadius="16px"
-          >
-            <Text variant="regular_20_1p">ye</Text>
-            <Flex ml="auto" gap="2">
-              <Button
-                onClick={() => {
-                  alert('YEYE');
-                }}
-              >
-                Ignora
-              </Button>
-              <Button
-                onClick={() => {
-                  alert('YEYE');
-                }}
-                variant="risen_secondary"
-              >
-                PRESCRIVI
-              </Button>
-            </Flex>
-          </Box>
-        </Flex>
+            <Button
+              variant="risen"
+              onClick={() => {
+                alert('TODO');
+              }}
+            >
+              CHIARO
+            </Button>
+          </Flex>
+        </ExpandableLogoContainer>
       ) : (
-        <Flex mt={2} mb={4} w="100%" align="center" gap="2">
-          YEYEYEYYEYEY
-        </Flex>
+        <ExpandableLogoContainer
+          title="risoluzione del caso"
+          titleIconUrl={ExamIcon}
+          titleBackgroundColor="white"
+        >
+          <Flex mb={4} w="100%" align="center" gap="2" zIndex="1">
+            pertinenza delle domande pertinenza degli esami pertinenza della
+            diagnosi
+          </Flex>
+        </ExpandableLogoContainer>
       )}
-      <Button onClick={onChangeTab}>Vai da n'altra parte</Button>
+      <Flex mt="1.5" justify="space-between" w="100%">
+        <Button variant="risen" onClick={onChangeTab}>
+          {step === 'answers' ? 'GUARDA IL PUNTEGGIO' : 'CONTROLLA LE RISPOSTE'}
+        </Button>
+        <Link to="/">
+          <Button variant="risen_secondary">TERMINA</Button>
+        </Link>
+      </Flex>
     </Flex>
   );
 };
