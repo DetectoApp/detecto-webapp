@@ -83,7 +83,7 @@ export default function Register() {
             onChange={handleChange}
             value={values.email}
             onBlur={handleBlur}
-            disabled={isSubmitting}
+            isDisabled={isSubmitting}
           />
           <CustomInput
             label="Password"
@@ -96,7 +96,7 @@ export default function Register() {
             onChange={handleChange}
             value={values.password}
             onBlur={handleBlur}
-            disabled={isSubmitting}
+            isDisabled={isSubmitting}
           />
           <CustomInput
             label="Nome"
@@ -108,7 +108,7 @@ export default function Register() {
             onChange={handleChange}
             value={values.firstname}
             onBlur={handleBlur}
-            disabled={isSubmitting}
+            isDisabled={isSubmitting}
           />
           <CustomInput
             label="Cognome"
@@ -121,7 +121,7 @@ export default function Register() {
             onChange={handleChange}
             value={values.surname}
             onBlur={handleBlur}
-            disabled={isSubmitting}
+            isDisabled={isSubmitting}
           />
 
           <Button

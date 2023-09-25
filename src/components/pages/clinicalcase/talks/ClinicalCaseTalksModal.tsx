@@ -156,13 +156,13 @@ const TalkModalDetail = ({
 
       <Flex ml="auto" gap="2">
         <Button
-          disabled={talkStatus === 'OPENED' || talkStatus === 'IGNORED'}
+          isDisabled={talkStatus === 'OPENED' || talkStatus === 'IGNORED'}
           onClick={() => setTalkStatus(talk.type + talk.id, 'IGNORED')}
         >
           Ignora
         </Button>
         <Button
-          disabled={talkStatus === 'OPENED' || talkStatus === 'IGNORED'}
+          isDisabled={talkStatus === 'OPENED' || talkStatus === 'IGNORED'}
           onClick={() => {
             setTalkStatus(talk.type + talk.id, 'OPENED');
           }}

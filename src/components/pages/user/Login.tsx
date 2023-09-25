@@ -70,7 +70,7 @@ export default function Login() {
             errorText={touched.email && errors.email}
             onChange={handleChange}
             onBlur={handleBlur}
-            disabled={isSubmitting}
+            isDisabled={isSubmitting}
           />
           <CustomInput
             label="Password"
@@ -82,7 +82,7 @@ export default function Login() {
             errorText={touched.email && errors.email}
             onChange={handleChange}
             onBlur={handleBlur}
-            disabled={isSubmitting}
+            isDisabled={isSubmitting}
           />
           <Button
             variant="risen_secondary"

@@ -77,7 +77,7 @@ export default function Profile() {
             errorText={touched.email && errors.email}
             onChange={handleChange}
             onBlur={handleBlur}
-            disabled={isSubmitting}
+            isDisabled={isSubmitting}
           />
           <CustomInput
             label="Password"
@@ -89,7 +89,7 @@ export default function Profile() {
             errorText={touched.email && errors.email}
             onChange={handleChange}
             onBlur={handleBlur}
-            disabled={isSubmitting}
+            isDisabled={isSubmitting}
           />
 
           <Button

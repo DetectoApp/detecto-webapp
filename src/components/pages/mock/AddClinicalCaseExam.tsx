@@ -129,7 +129,7 @@ export default 0; /*function AddClinicalCaseExam() {
           placeholder="details"
           value={exam.details}
           onChange={e => setExam(c => ({ ...c, details: e.target.value }))}
-          disabled={loading}
+          isDisabled={loading}
         />
 
         <Checkbox
@@ -137,7 +137,7 @@ export default 0; /*function AddClinicalCaseExam() {
           onChange={e =>
             setExam(c => ({ ...c, is_misleading: e.target.checked }))
           }
-          disabled={loading}
+          isDisabled={loading}
         />
 
         {exam.examType === ExamTypes.ObjectiveExam ? (
@@ -187,7 +187,7 @@ export default 0; /*function AddClinicalCaseExam() {
               placeholder="media"
               value={exam.media}
               onChange={e => setExam(c => ({ ...c, media: e.target.value }))}
-              disabled={loading}
+              isDisabled={loading}
             />
           </>
         ) : (
@@ -217,7 +217,7 @@ export default 0; /*function AddClinicalCaseExam() {
               placeholder="media"
               value={exam.media}
               onChange={e => setExam(c => ({ ...c, media: e.target.value }))}
-              disabled={loading}
+              isDisabled={loading}
             />
           </>
         )}

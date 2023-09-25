@@ -6,7 +6,6 @@ import CrossIcon from '../../../../assets/cross_icon.svg';
 import ExamIcon from '../../../../assets/exam_icon.svg';
 import PatientIcon from '../../../../assets/patient_icon.svg';
 import TalkIcon from '../../../../assets/talk_icon.svg';
-import supabase from '../../../../supabase';
 import { ClinicalCase } from '../../../../types/types';
 import { ClinicalCaseAvatar } from '../../../ClinicalCaseAvatar';
 import { ClinicalCaseDiagnosisModal } from '../diagnosis/ClinicalCaseDiagnosisModal';
@@ -18,9 +17,10 @@ import {
   fetchExams,
   fetchTalks,
 } from '../../../../supabase/queries';
-import { ExamTypes, TalkTypes } from '@/types/enums';
-import { OneOfExam } from '@/types/examTypes';
-import { OneOfTalk } from '@/types/talkTypes';
+import { ExamTypes, TalkTypes } from '../../../../types/enums';
+import { OneOfExam } from '../../../../types/examTypes';
+import { OneOfTalk } from '../../../../types/talkTypes';
+import { useCaseExplorationStore } from '../../../../store';
 
 export default function ClinicalCaseDetails() {
   const { id } = useParams<{ id: string }>();
@@ -50,6 +50,11 @@ export default function ClinicalCaseDetails() {
     };
     if (id) getData(id);
   }, [id]);
+
+  const { playedTalks, playedExams } = useCaseExplorationStore(s => ({
+    playedTalks: Object.values(s.talkStatuses),
+    playedExams: Object.values(s.examStatuses),
+  }));
 
   if (loading) {
     return (
@@ -107,6 +112,10 @@ export default function ClinicalCaseDetails() {
         );
     }
   };
+
+  const areAllCasesAnswered =
+    playedTalks.length === availableTalks?.length &&
+    playedExams.length === availableExams?.length;
 
   return (
     <Flex direction="column" pt="8" pb="5" flexGrow={1}>
@@ -187,6 +196,7 @@ export default function ClinicalCaseDetails() {
           <Text variant="bold_24_1p">Vai alla diagnosi</Text>
           <Button
             onClick={() => setModalShowing('diagnosis')}
+            isDisabled={!areAllCasesAnswered}
             variant="risen_error"
             w="156px"
             h="104px"

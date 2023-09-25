@@ -153,7 +153,10 @@ const QuizDiagnosisStep = ({
               key={a.id}
               width="100%"
               onClick={() => setQuizAnswer(currentQuiz.id.toString(), a)}
-              disabled={!!currentQuizAnswer}
+              isDisabled={
+                !!currentQuizAnswer && currentQuizAnswer.id !== a.id
+                //TODO
+              }
               variant={
                 !currentQuizAnswer || currentQuizAnswer.id !== a.id
                   ? 'risen'
@@ -169,7 +172,7 @@ const QuizDiagnosisStep = ({
         mt="auto"
         ml="auto"
         onClick={onConfirmButton}
-        disabled={!currentQuizAnswer}
+        isDisabled={!currentQuizAnswer}
       >
         Conferma
       </Button>

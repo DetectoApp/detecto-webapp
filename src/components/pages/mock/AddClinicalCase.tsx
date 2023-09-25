@@ -42,24 +42,24 @@ export default function AddClinicalCase() {
         <CustomInput
           label="PLACEHOLDERLABEL"
           h="100%"
-                    placeholder="patient name"
+          placeholder="patient name"
           value={clinicalCase.patient_name}
           onChange={e =>
             setClinicalCase(c => ({ ...c, patient_name: e.target.value }))
           }
-          disabled={loading}
+          isDisabled={loading}
         />
 
         <CustomInput
           label="PLACEHOLDERLABEL"
           type="number"
           h="100%"
-                    placeholder="patient age"
+          placeholder="patient age"
           value={clinicalCase.age}
           onChange={e =>
             setClinicalCase(c => ({ ...c, age: e.target.valueAsNumber }))
           }
-          disabled={loading}
+          isDisabled={loading}
         />
 
         <Select
@@ -81,7 +81,7 @@ export default function AddClinicalCase() {
           label="PLACEHOLDERLABEL"
           type="number"
           h="100%"
-                    placeholder="patient weight"
+          placeholder="patient weight"
           value={clinicalCase.patient_weight}
           onChange={e =>
             setClinicalCase(c => ({
@@ -89,13 +89,13 @@ export default function AddClinicalCase() {
               patient_weight: e.target.valueAsNumber,
             }))
           }
-          disabled={loading}
+          isDisabled={loading}
         />
         <CustomInput
           label="PLACEHOLDERLABEL"
           type="number"
           h="100%"
-                    placeholder="patient height"
+          placeholder="patient height"
           value={clinicalCase.patient_height}
           onChange={e =>
             setClinicalCase(c => ({
@@ -103,18 +103,18 @@ export default function AddClinicalCase() {
               patient_height: e.target.valueAsNumber,
             }))
           }
-          disabled={loading}
+          isDisabled={loading}
         />
 
         <CustomInput
           label="PLACEHOLDERLABEL"
           h="100%"
-                    placeholder="brief desc"
+          placeholder="brief desc"
           value={clinicalCase.brief_description}
           onChange={e =>
             setClinicalCase(c => ({ ...c, brief_description: e.target.value }))
           }
-          disabled={loading}
+          isDisabled={loading}
         />
 
         <Select
