@@ -1,8 +1,8 @@
 import { QuizAnswer } from '@/types/types';
 import { create } from 'zustand';
 
-export type ExamStatus = 'IGNORED' | 'OPENED';
-export type TalkStatus = 'IGNORED' | 'OPENED';
+export type ExamStatus = { status: 'IGNORED' | 'OPENED'; id: number };
+export type TalkStatus = { status: 'IGNORED' | 'OPENED'; id: number };
 
 interface CaseExplorationStoreType {
   examStatuses: { [examId: string]: ExamStatus };
@@ -26,9 +26,9 @@ export const useCaseExplorationStore = create<CaseExplorationStoreType>(set => {
     getQuizAnswer: quizId => store.quizAnswers[quizId],
     setExamStatus: (examId, examStatus) =>
       set(s => ({ examStatuses: { ...s.examStatuses, [examId]: examStatus } })),
-      setTalkStatus: (talkId, talkStatus) =>
+    setTalkStatus: (talkId, talkStatus) =>
       set(s => ({ talkStatuses: { ...s.talkStatuses, [talkId]: talkStatus } })),
-      setQuizAnswer: (quizId, quizAnswer) =>
+    setQuizAnswer: (quizId, quizAnswer) =>
       set(s => ({ quizAnswers: { ...s.quizAnswers, [quizId]: quizAnswer } })),
   };
   return store;

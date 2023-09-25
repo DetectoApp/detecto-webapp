@@ -6,35 +6,48 @@ import CrossIcon from '../../../../assets/cross_icon.svg';
 import ExamIcon from '../../../../assets/exam_icon.svg';
 import PatientIcon from '../../../../assets/patient_icon.svg';
 import TalkIcon from '../../../../assets/talk_icon.svg';
-import { ClinicalCase } from '../../../../types/types';
-import { ClinicalCaseAvatar } from '../../../ClinicalCaseAvatar';
-import { ClinicalCaseDiagnosisModal } from '../diagnosis/ClinicalCaseDiagnosisModal';
-import { ClinicalCaseExamsModal } from '../exams/ClinicalCaseExamsModal';
-import { ClinicalCaseTalksModal } from '../talks/ClinicalCaseTalksModal';
-import { ClinicalCaseInfoModal } from './ClinicalCaseInfoModal';
+import { useCaseExplorationStore } from '../../../../store';
 import {
   fetchCase,
   fetchExams,
+  fetchQuizzes,
   fetchTalks,
 } from '../../../../supabase/queries';
 import { ExamTypes, TalkTypes } from '../../../../types/enums';
 import { OneOfExam } from '../../../../types/examTypes';
 import { OneOfTalk } from '../../../../types/talkTypes';
-import { useCaseExplorationStore } from '../../../../store';
+import { ClinicalCase, Quiz, QuizAnswer } from '../../../../types/types';
+import { ClinicalCaseAvatar } from '../../../ClinicalCaseAvatar';
+import { ClinicalCaseDiagnosisModal } from '../diagnosis/ClinicalCaseDiagnosisModal';
+import { ClinicalCaseExamsModal } from '../exams/ClinicalCaseExamsModal';
+import { ClinicalCaseTalksModal } from '../talks/ClinicalCaseTalksModal';
+import { ClinicalCaseInfoModal } from './ClinicalCaseInfoModal';
 
 export default function ClinicalCaseDetails() {
   const { id } = useParams<{ id: string }>();
 
-  const [{ clinicalCase, availableExams, availableTalks }, setClinicalCase] =
-    useState<{
-      clinicalCase: ClinicalCase | null;
-      availableExams:
-        | (OneOfExam & { type: ExamTypes; answer: string; title: string })[]
-        | null;
-      availableTalks:
-        | (OneOfTalk & { type: TalkTypes; answer: string; title: string })[]
-        | null;
-    }>({ clinicalCase: null, availableTalks: null, availableExams: null });
+  const [
+    { clinicalCase, availableExams, availableTalks, availableQuizzes },
+    setClinicalCase,
+  ] = useState<{
+    clinicalCase: ClinicalCase | null;
+    availableExams:
+      | (OneOfExam & { type: ExamTypes; answer: string; title: string })[]
+      | null;
+    availableTalks:
+      | (OneOfTalk & { type: TalkTypes; answer: string; title: string })[]
+      | null;
+    availableQuizzes:
+      | (Quiz & {
+          answers: QuizAnswer[];
+        })[]
+      | null;
+  }>({
+    clinicalCase: null,
+    availableTalks: null,
+    availableExams: null,
+    availableQuizzes: null,
+  });
   const [loading, setLoading] = useState<boolean>(false);
 
   const [modalShowing, setModalShowing] = useState<
@@ -43,18 +56,29 @@ export default function ClinicalCaseDetails() {
 
   useEffect(() => {
     const getData = async (id: string) => {
+      setLoading(true);
       const clinicalCase = await fetchCase(id);
       const availableTalks = await fetchTalks(id);
       const availableExams = await fetchExams(id);
-      setClinicalCase({ clinicalCase, availableExams, availableTalks });
+      const availableQuizzes = await fetchQuizzes(id);
+      setClinicalCase({
+        clinicalCase,
+        availableExams,
+        availableTalks,
+        availableQuizzes,
+      });
+      setLoading(false);
     };
     if (id) getData(id);
   }, [id]);
 
-  const { playedTalks, playedExams } = useCaseExplorationStore(s => ({
-    playedTalks: Object.values(s.talkStatuses),
-    playedExams: Object.values(s.examStatuses),
-  }));
+  const { playedTalks, playedExams, playedQuizzes } = useCaseExplorationStore(
+    s => ({
+      playedTalks: Object.values(s.talkStatuses),
+      playedExams: Object.values(s.examStatuses),
+      playedQuizzes: Object.values(s.quizAnswers),
+    })
+  );
 
   if (loading) {
     return (
@@ -105,6 +129,12 @@ export default function ClinicalCaseDetails() {
       case 'diagnosis':
         return (
           <ClinicalCaseDiagnosisModal
+            availableTalks={availableTalks}
+            playedTalks={playedTalks}
+            availableExams={availableExams}
+            playedExams={playedExams}
+            availableQuizzes={availableQuizzes}
+            playedQuizzes={playedQuizzes}
             clinicalCase={clinicalCase}
             isOpen
             onClose={() => setModalShowing(undefined)}

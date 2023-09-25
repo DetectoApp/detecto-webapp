@@ -1,4 +1,3 @@
-import { ListItemButton, ModalContainer } from '../../../ModalComponents';
 import {
   Box,
   Button,
@@ -7,26 +6,16 @@ import {
   Image,
   ModalProps,
   Select,
-  Skeleton,
   Text,
 } from '@chakra-ui/react';
-import React, { useEffect, useMemo, useState } from 'react';
-import { ClinicalCase } from '../../../../types/types';
-import {
-  PreviousVisit,
-  OneOfTalk,
-  Relationship,
-  Symptom,
-} from '../../../../types/talkTypes';
-import supabase from '../../../../supabase';
-import { TalkTypes } from '../../../../types/enums';
-import { useCaseExplorationStore } from '../../../../store';
+import React, { useMemo, useState } from 'react';
 import BackIcon from '../../../../assets/back.svg';
 import TalkIcon from '../../../../assets/talk_icon.svg';
-
-const initialQuestion =
-  'Chiedi al paziento le informazioni giuste che possono aiutarti a risolvere il suo problema';
-const ignoredString = 'Hai deciso di ignorare questa domanda';
+import { useCaseExplorationStore } from '../../../../store';
+import { TalkTypes } from '../../../../types/enums';
+import { OneOfTalk } from '../../../../types/talkTypes';
+import { ListItemButton, ModalContainer } from '../../../ModalComponents';
+import { getString } from '../../../../intl';
 
 const ClinicalCaseTalksModalList = ({
   setTalk,
@@ -85,10 +74,10 @@ const ClinicalCaseTalksModalList = ({
                 <ListItemButton
                   key={talk.type + talk.id}
                   pallino={
-                    talkStatus === 'IGNORED'
-                      ? 'error'
-                      : talkStatus === 'OPENED'
-                      ? 'secondary.500'
+                    talkStatus
+                      ? talkStatus.status === 'IGNORED'
+                        ? 'error'
+                        : 'secondary.500'
                       : undefined
                   }
                   onClick={() => {
@@ -146,25 +135,33 @@ const TalkModalDetail = ({
         borderRadius="16px"
       >
         <Text variant="regular_20_1p">
-          {talkStatus === 'OPENED'
-            ? talk.answer
-            : talkStatus === 'IGNORED'
-            ? ignoredString
-            : initialQuestion}
+          {talkStatus
+            ? talkStatus.status === 'OPENED'
+              ? talk.answer
+              : getString('ignoredTalk')
+            : getString('talkQuestion')}
         </Text>
       </Box>
 
       <Flex ml="auto" gap="2">
         <Button
-          isDisabled={talkStatus === 'OPENED' || talkStatus === 'IGNORED'}
-          onClick={() => setTalkStatus(talk.type + talk.id, 'IGNORED')}
+          isDisabled={!!talkStatus}
+          onClick={() =>
+            setTalkStatus(talk.type + talk.id, {
+              id: talk.id,
+              status: 'IGNORED',
+            })
+          }
         >
           Ignora
         </Button>
         <Button
-          isDisabled={talkStatus === 'OPENED' || talkStatus === 'IGNORED'}
+          isDisabled={!!talkStatus}
           onClick={() => {
-            setTalkStatus(talk.type + talk.id, 'OPENED');
+            setTalkStatus(talk.type + talk.id, {
+              id: talk.id,
+              status: 'OPENED',
+            });
           }}
           variant="risen_secondary"
         >

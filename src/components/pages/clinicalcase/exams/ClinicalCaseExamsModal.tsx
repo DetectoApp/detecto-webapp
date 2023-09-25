@@ -1,4 +1,3 @@
-import { ListItemButton, ModalContainer } from '../../../ModalComponents';
 import {
   Box,
   Button,
@@ -7,28 +6,18 @@ import {
   Image,
   ModalProps,
   Select,
-  Skeleton,
   Text,
 } from '@chakra-ui/react';
-import React, { useEffect, useMemo, useState } from 'react';
-import { ClinicalCase } from '../../../../types/types';
-import {
-  InstrumentalExam,
-  OneOfExam,
-  LaboratoryExam,
-  ObjectiveExam,
-} from '../../../../types/examTypes';
-import supabase from '../../../../supabase';
-import { ExamTypes } from '../../../../types/enums';
+import React, { useMemo, useState } from 'react';
 import { useCaseExplorationStore } from '../../../../store';
+import { ExamTypes } from '../../../../types/enums';
+import { OneOfExam } from '../../../../types/examTypes';
+import { ListItemButton, ModalContainer } from '../../../ModalComponents';
 
-import TalkIcon from '../../../../assets/talk_icon.svg';
-import ExamIcon from '../../../../assets/exam_icon.svg';
 import BackIcon from '../../../../assets/back.svg';
-
-const initialQuestion =
-  'Vuoi effettuare l’esame? Se si premi prescrivi.\n\nRicorda che gli esami possono essere anche svianti e non correlati al caso.';
-const ignoredString = 'Hai ignorato l’esame.';
+import ExamIcon from '../../../../assets/exam_icon.svg';
+import TalkIcon from '../../../../assets/talk_icon.svg';
+import { getString } from '../../../../intl';
 
 const ClinicalCaseExamsModalList = ({
   setExam,
@@ -87,10 +76,10 @@ const ClinicalCaseExamsModalList = ({
                 <ListItemButton
                   key={exam.type + exam.id}
                   pallino={
-                    examStatus === 'IGNORED'
-                      ? 'error'
-                      : examStatus === 'OPENED'
-                      ? 'secondary.500'
+                    examStatus
+                      ? examStatus.status === 'IGNORED'
+                        ? 'error'
+                        : 'secondary.500'
                       : undefined
                   }
                   onClick={() => {
@@ -147,21 +136,33 @@ const ExamModalDetail = ({
         borderRadius="16px"
       >
         <Text variant="regular_20_1p">
-          {examStatus === 'OPENED'
-            ? exam.answer
-            : examStatus === 'IGNORED'
-            ? ignoredString
-            : initialQuestion}
+          {examStatus
+            ? examStatus.status === 'OPENED'
+              ? exam.answer
+              : getString('ignoredExam')
+            : getString('examQuestion')}
         </Text>
       </Box>
 
       <Flex ml="auto" gap="2">
-        <Button onClick={() => setExamStatus(exam.type + exam.id, 'IGNORED')}>
+        <Button
+          isDisabled={!!examStatus}
+          onClick={() =>
+            setExamStatus(exam.type + exam.id, {
+              id: exam.id,
+              status: 'IGNORED',
+            })
+          }
+        >
           Ignora
         </Button>
         <Button
+          isDisabled={!!examStatus}
           onClick={() => {
-            setExamStatus(exam.type + exam.id, 'OPENED');
+            setExamStatus(exam.type + exam.id, {
+              id: exam.id,
+              status: 'OPENED',
+            });
           }}
           variant="risen_secondary"
         >

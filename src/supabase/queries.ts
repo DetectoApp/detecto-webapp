@@ -1,3 +1,4 @@
+import { Quiz, QuizAnswer } from '@/types/types';
 import supabase from '../supabase';
 import { ExamTypes, TalkTypes } from '../types/enums';
 import {
@@ -150,4 +151,33 @@ export const fetchExams = async (clinicalCaseId: string) => {
     );
 
   return exams;
+};
+
+export const fetchQuizzes = async (clinicalCaseId: string) => {
+  const quizzes: (Quiz & { answers: QuizAnswer[] })[] = [];
+
+  const { data, error } = await supabase
+    .from<Quiz>('quiz')
+    .select('*')
+    .eq('clinical_case', clinicalCaseId);
+
+  if (error) {
+    console.log(error);
+    return quizzes;
+  }
+
+  for (const q of data) {
+    const { data: answers, error } = await supabase
+      .from<QuizAnswer>('quiz_answer')
+      .select('*')
+      .eq('quiz', q.id);
+
+    if (error) {
+      console.log(error);
+    } else {
+      quizzes.push({ ...q, answers });
+    }
+  }
+
+  return quizzes;
 };
