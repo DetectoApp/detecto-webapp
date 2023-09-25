@@ -30,109 +30,28 @@ const ignoredString = 'Hai deciso di ignorare questa domanda';
 
 const ClinicalCaseTalksModalList = ({
   setTalk,
-  clinicalCase,
+  talks,
 }: {
   setTalk: (
     talk: OneOfTalk & { type: TalkTypes; answer: string; title: string }
   ) => void;
-  clinicalCase: ClinicalCase;
+  talks: (OneOfTalk & { type: TalkTypes; answer: string; title: string })[];
 }) => {
   const [talkFilter, setTalkFilter] = useState<TalkTypes | undefined>(
     undefined
   );
 
-  const [availableTalks, setAvailableTalks] = useState<
-    (OneOfTalk & { type: TalkTypes; answer: string; title: string })[]
-  >([]);
-  const [loading, setLoading] = useState<boolean>(false);
-
   const talkStatuses = useCaseExplorationStore(s => s.talkStatuses);
 
-  useEffect(() => {
-    const fetchTalks = async () => {
-      const talks: (OneOfTalk & {
-        type: TalkTypes;
-        answer: string;
-        title: string;
-      })[] = [];
-
-      const { data: previousVisit, error: previousVisitError } = await supabase
-        .from<PreviousVisit>('previous_visit')
-        .select('*')
-        .eq('clinical_case', clinicalCase.id);
-
-      if (previousVisitError) {
-        console.log(previousVisitError);
-      } else
-        talks.push(
-          ...previousVisit.map(e => ({
-            ...e,
-            type: TalkTypes.PreviousVisit,
-            title: e.specialist_type,
-            answer: e.diagnosis_short,
-          }))
-        );
-
-      const { data: relationship, error: relationshipError } = await supabase
-        .from<Relationship>('relationship')
-        .select('*')
-        .eq('clinical_case', clinicalCase.id);
-
-      if (relationshipError) {
-        console.log(relationshipError);
-      } else
-        talks.push(
-          ...relationship.map(e => ({
-            ...e,
-            type: TalkTypes.Relationship,
-            title: e.family_member_grade + e.health_state,
-            answer: e.details,
-          }))
-        );
-
-      const { data: symptom, error: symptomError } = await supabase
-        .from<Symptom>('symptom')
-        .select('*')
-        .eq('clinical_case', clinicalCase.id);
-
-      if (symptomError) {
-        console.log(symptomError);
-      } else
-        talks.push(
-          ...symptom.map(e => ({
-            ...e,
-            type: TalkTypes.Symptom,
-            title: e.body_district,
-            answer: e.symptom_details,
-          }))
-        );
-
-      setAvailableTalks(talks);
-      setLoading(false);
-    };
-
-    fetchTalks();
-  }, [clinicalCase]);
-
   const filteredTalks = useMemo(() => {
-    if (talkFilter) return availableTalks.filter(t => t.type === talkFilter);
-    else return availableTalks;
-  }, [talkFilter, availableTalks]);
-
-  if (loading) {
-    return (
-      <Skeleton
-        width={{ base: '90vw', sm: '80vw', lg: '50vw', xl: '30vw' }}
-        height="300px"
-        rounded="md"
-      />
-    );
-  }
+    if (talkFilter) return talks.filter(t => t.type === talkFilter);
+    else return talks;
+  }, [talkFilter, talks]);
 
   return (
     <>
       <Select
-        placeholder="TalkType"
+        placeholder="Tutti"
         onChange={e => {
           console.log(e);
           setTalkFilter(
@@ -257,9 +176,16 @@ const TalkModalDetail = ({
 };
 
 export const ClinicalCaseTalksModal = ({
-  clinicalCase,
+  talks,
   ...modalProps
-}: { clinicalCase: ClinicalCase } & Omit<ModalProps, 'children'>) => {
+}: {
+  talks:
+    | (OneOfTalk & {
+        type: TalkTypes;
+        answer: string;
+        title: string;
+      })[];
+} & Omit<ModalProps, 'children'>) => {
   const [talk, setTalk] = useState<
     (OneOfTalk & { type: TalkTypes; answer: string; title: string }) | undefined
   >(undefined);
@@ -274,10 +200,7 @@ export const ClinicalCaseTalksModal = ({
       {talk ? (
         <TalkModalDetail talk={talk} setTalk={setTalk} />
       ) : (
-        <ClinicalCaseTalksModalList
-          setTalk={setTalk}
-          clinicalCase={clinicalCase}
-        />
+        <ClinicalCaseTalksModalList setTalk={setTalk} talks={talks} />
       )}
     </ModalContainer>
   );

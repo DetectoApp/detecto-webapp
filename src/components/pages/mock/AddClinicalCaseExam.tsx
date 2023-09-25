@@ -1,37 +1,12 @@
-import {
-  Box,
-  Button,
-  Checkbox,
-  Select,
-  Skeleton,
-  Text,
-  VStack,
-  useToast,
-} from '@chakra-ui/react';
-import React, { useState } from 'react';
-import { useRealtime } from 'react-supabase';
-import { CustomInput } from '../../../components/inputs/CustomInput';
-import supabase from '../../../supabase';
-import {
-  BodyDistrict,
-  ExamTypes,
-  InstrumentalExamName,
-  LaboratoryExamName,
-} from '../../../types/enums';
-import {
-  AllOfExam,
-  InstrumentalExam,
-  LaboratoryExam,
-  ObjectiveExam,
-} from '../../../types/examTypes';
-import { ClinicalCase } from '../../../types/types';
+import { ExamTypes } from '../../../types/enums';
+import { AllOfExam } from '../../../types/examTypes';
 
 type ClinicalCaseExamInput = AllOfExam & {
   examType: ExamTypes;
   answer: string;
 };
 
-export default function AddClinicalCaseExam() {
+export default 0; /*function AddClinicalCaseExam() {
   const [exam, setExam] = useState<Partial<ClinicalCaseExamInput>>({});
   const [loading, setLoading] = useState(false);
   const toast = useToast();
@@ -261,3 +236,4 @@ export default function AddClinicalCaseExam() {
     </form>
   );
 }
+*/

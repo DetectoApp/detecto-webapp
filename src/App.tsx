@@ -48,8 +48,7 @@ export default function App() {
               {/* auth */}
               <Route element={<AuthedOutlet isLoggedIn={isLoggedIn} />}>
                 <Route path="/demoadd" element={<AddClinicalCase />} />
-                <Route path="/demoadd/exam" element={<AddClinicalCaseExam />} />
-                <Route path="/demoadd/talk" element={<AddClinicalCaseTalk />} />
+                {/* <Route path="/demoadd/exam" element={<AddClinicalCaseExam />} /> */}
                 <Route path="/list" element={<ClinicalCaseList />} />
                 <Route path="/case/:id" element={<ClinicalCaseDetails />} />
                 <Route path="/profile" element={<Profile />} />

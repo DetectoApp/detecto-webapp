@@ -1,10 +1,23 @@
-import { BodyDistrict } from './enums';
+export interface ClinicalCaseExamType {
+  id: number;
+  name: string;
+}
+
+export interface BodyDistrict {
+  id: number;
+  label: string;
+}
+
+export interface InstrumentalExamType extends ClinicalCaseExamType {}
+
+export interface LaboratoryExamType extends ClinicalCaseExamType {}
 
 export interface ClinicalCaseExam {
   id: number;
   details: string;
   is_misleading: boolean;
   clinical_case: number;
+  exam_type_id: number;
 }
 
 export interface ObjectiveExam extends ClinicalCaseExam {
@@ -12,12 +25,12 @@ export interface ObjectiveExam extends ClinicalCaseExam {
 }
 
 export interface InstrumentalExam extends ClinicalCaseExam {
-  exam_name: string; //TODO
+  instrumental_exam_type: InstrumentalExamType;
   media: string;
 }
 
 export interface LaboratoryExam extends ClinicalCaseExam {
-  exam_name: string; //TODO
+  laboratory_exam_type: LaboratoryExamType;
   media: string;
 }
 

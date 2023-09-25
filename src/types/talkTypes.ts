@@ -1,9 +1,17 @@
-import { BodyDistrict, SpecialistType } from './enums';
+import { SpecialistType } from './enums';
+import { BodyDistrict } from './examTypes';
 
 export enum TalkTypes {
   'PreviousVisit' = '1',
   'Relationship' = '2',
   'Symptom' = '3',
+  'Behaviour' = '4',
+}
+
+export interface BodySymptom {
+  id: number;
+  name: string;
+  body_district: BodyDistrict;
 }
 
 export interface ClinicalCaseTalk {
@@ -25,7 +33,7 @@ export interface Relationship extends ClinicalCaseTalk {
 }
 
 export interface Symptom extends ClinicalCaseTalk {
-  body_district: BodyDistrict;
+  body_symptom: BodySymptom;
   symptom: string;
   symptom_details: string;
   media: string;

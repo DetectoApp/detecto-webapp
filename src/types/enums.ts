@@ -1,11 +1,3 @@
-export enum BodyDistrict {
-  'Head' = '1',
-  'Shoulders' = '2',
-  'Pesce' = '3',
-  'Palle' = '4',
-  'PeppePiedini' = '5',
-}
-
 export enum SpecialistType {
   'OMEOPATA' = '1',
   'MINCHIOLOGO' = '2',

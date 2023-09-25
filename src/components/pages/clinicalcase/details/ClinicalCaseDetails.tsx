@@ -13,10 +13,28 @@ import { ClinicalCaseDiagnosisModal } from '../diagnosis/ClinicalCaseDiagnosisMo
 import { ClinicalCaseExamsModal } from '../exams/ClinicalCaseExamsModal';
 import { ClinicalCaseTalksModal } from '../talks/ClinicalCaseTalksModal';
 import { ClinicalCaseInfoModal } from './ClinicalCaseInfoModal';
+import {
+  fetchCase,
+  fetchExams,
+  fetchTalks,
+} from '../../../../supabase/queries';
+import { ExamTypes, TalkTypes } from '@/types/enums';
+import { OneOfExam } from '@/types/examTypes';
+import { OneOfTalk } from '@/types/talkTypes';
 
 export default function ClinicalCaseDetails() {
   const { id } = useParams<{ id: string }>();
-  const [clinicalCase, setClinicalCase] = useState<ClinicalCase | null>(null);
+
+  const [{ clinicalCase, availableExams, availableTalks }, setClinicalCase] =
+    useState<{
+      clinicalCase: ClinicalCase | null;
+      availableExams:
+        | (OneOfExam & { type: ExamTypes; answer: string; title: string })[]
+        | null;
+      availableTalks:
+        | (OneOfTalk & { type: TalkTypes; answer: string; title: string })[]
+        | null;
+    }>({ clinicalCase: null, availableTalks: null, availableExams: null });
   const [loading, setLoading] = useState<boolean>(false);
 
   const [modalShowing, setModalShowing] = useState<
@@ -24,23 +42,13 @@ export default function ClinicalCaseDetails() {
   >(undefined);
 
   useEffect(() => {
-    const fetchCase = async () => {
-      const { data: clinicalCase, error } = await supabase
-        .from('clinical_case')
-        .select('*')
-        .eq('id', id)
-        .single();
-
-      if (error) {
-        console.log(error);
-      } else {
-        setClinicalCase(clinicalCase);
-      }
-
-      setLoading(false);
+    const getData = async (id: string) => {
+      const clinicalCase = await fetchCase(id);
+      const availableTalks = await fetchTalks(id);
+      const availableExams = await fetchExams(id);
+      setClinicalCase({ clinicalCase, availableExams, availableTalks });
     };
-
-    fetchCase();
+    if (id) getData(id);
   }, [id]);
 
   if (loading) {
@@ -76,7 +84,7 @@ export default function ClinicalCaseDetails() {
       case 'exam':
         return (
           <ClinicalCaseExamsModal
-            clinicalCase={clinicalCase}
+            exams={availableExams!}
             isOpen
             onClose={() => setModalShowing(undefined)}
           />
@@ -84,7 +92,7 @@ export default function ClinicalCaseDetails() {
       case 'talk':
         return (
           <ClinicalCaseTalksModal
-            clinicalCase={clinicalCase}
+            talks={availableTalks!}
             isOpen
             onClose={() => setModalShowing(undefined)}
           />

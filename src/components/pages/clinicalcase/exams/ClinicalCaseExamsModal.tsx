@@ -32,111 +32,28 @@ const ignoredString = 'Hai ignorato l’esame.';
 
 const ClinicalCaseExamsModalList = ({
   setExam,
-  clinicalCase,
+  exams,
 }: {
   setExam: (
     exam: OneOfExam & { type: ExamTypes; answer: string; title: string }
   ) => void;
-  clinicalCase: ClinicalCase;
+  exams: (OneOfExam & { type: ExamTypes; answer: string; title: string })[];
 }) => {
   const [examFilter, setExamFilter] = useState<ExamTypes | undefined>(
     undefined
   );
 
-  const [availableExams, setAvailableExams] = useState<
-    (OneOfExam & { type: ExamTypes; answer: string; title: string })[]
-  >([]);
-  const [loading, setLoading] = useState<boolean>(false);
-
   const examStatuses = useCaseExplorationStore(s => s.examStatuses);
 
-  useEffect(() => {
-    const fetchExams = async () => {
-      const exams: (OneOfExam & {
-        type: ExamTypes;
-        answer: string;
-        title: string;
-      })[] = [];
-
-      const { data: instrumentalExam, error: instrumentalExamError } =
-        await supabase
-          .from<InstrumentalExam>('instrumental_exam')
-          .select('*')
-          .eq('clinical_case', clinicalCase.id);
-
-      if (instrumentalExamError) {
-        console.log(instrumentalExamError);
-      } else
-        exams.push(
-          ...instrumentalExam.map(e => ({
-            ...e,
-            type: ExamTypes.InstrumentalExam,
-            title: e.exam_name,
-            answer: e.details,
-          }))
-        );
-
-      const { data: laboratoryExam, error: laboratoryExamError } =
-        await supabase
-          .from<LaboratoryExam>('laboratory_exam')
-          .select('*')
-          .eq('clinical_case', clinicalCase.id);
-
-      if (laboratoryExamError) {
-        console.log(laboratoryExamError);
-      } else
-        exams.push(
-          ...laboratoryExam.map(e => ({
-            ...e,
-            type: ExamTypes.LaboratoryExam,
-            title: e.exam_name,
-            answer: e.details,
-          }))
-        );
-
-      const { data: objectiveExam, error: objectiveExamError } = await supabase
-        .from<ObjectiveExam>('objective_exam')
-        .select('*')
-        .eq('clinical_case', clinicalCase.id);
-
-      if (objectiveExamError) {
-        console.log(objectiveExamError);
-      } else
-        exams.push(
-          ...objectiveExam.map(e => ({
-            ...e,
-            type: ExamTypes.ObjectiveExam,
-            title: e.body_district,
-            answer: e.details,
-          }))
-        );
-
-      setAvailableExams(exams);
-      setLoading(false);
-    };
-
-    fetchExams();
-  }, [clinicalCase]);
-
   const filteredExams = useMemo(() => {
-    if (examFilter) return availableExams.filter(t => t.type === examFilter);
-    else return availableExams;
-  }, [examFilter, availableExams]);
-
-  if (loading) {
-    return (
-      <Skeleton
-        width={{ base: '90vw', sm: '80vw', lg: '50vw', xl: '30vw' }}
-        height="300px"
-        rounded="md"
-      />
-    );
-  }
+    if (examFilter) return exams.filter(t => t.type === examFilter);
+    else return exams;
+  }, [examFilter, exams]);
 
   return (
     <>
       <Select
-        placeholder="ExamType"
+        placeholder="Tutti"
         onChange={e => {
           console.log(e);
           setExamFilter(
@@ -256,9 +173,11 @@ const ExamModalDetail = ({
 };
 
 export const ClinicalCaseExamsModal = ({
-  clinicalCase,
+  exams,
   ...modalProps
-}: { clinicalCase: ClinicalCase } & Omit<ModalProps, 'children'>) => {
+}: {
+  exams: (OneOfExam & { type: ExamTypes; answer: string; title: string })[];
+} & Omit<ModalProps, 'children'>) => {
   const [exam, setExam] = useState<
     (OneOfExam & { type: ExamTypes; answer: string; title: string }) | undefined
   >(undefined);
@@ -273,10 +192,7 @@ export const ClinicalCaseExamsModal = ({
       {exam ? (
         <ExamModalDetail exam={exam} setExam={setExam} />
       ) : (
-        <ClinicalCaseExamsModalList
-          setExam={setExam}
-          clinicalCase={clinicalCase}
-        />
+        <ClinicalCaseExamsModalList setExam={setExam} exams={exams} />
       )}
     </ModalContainer>
   );

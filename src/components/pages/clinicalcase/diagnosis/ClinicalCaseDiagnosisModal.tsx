@@ -207,38 +207,6 @@ const FinishedDiagnosisStep = ({
   clinicalCase: ClinicalCase;
 }) => {
   const caseExplorationStatus = useCaseExplorationStore();
-  const { talkScore, examScore, diagnosisScore } = useMemo<{
-    talkScore: number;
-    examScore: number;
-    diagnosisScore: number;
-  }>(() => {
-    const talkStatuses = Object.values(caseExplorationStatus.talkStatuses);
-    const misleadingTalkStatuses = talkStatuses.filter(t => t === 'IGNORED'); //TODO should be is_misleading
-
-    const examStatuses = Object.values(caseExplorationStatus.examStatuses);
-    const misleadingExamStatuses = examStatuses.filter(t => t === 'IGNORED'); //TODO should be is_misleading
-
-    const diagnosisQuestions = Object.values(caseExplorationStatus.quizAnswers);
-    const correctDiagnosis = diagnosisQuestions.filter(d => d.is_correct);
-
-    let talkScore = talkStatuses.length / misleadingTalkStatuses.length;
-    let examScore = examStatuses.length / misleadingExamStatuses.length;
-    let diagnosisScore = correctDiagnosis.length / diagnosisQuestions.length;
-
-    if (isNaN(talkScore)) talkScore = 1;
-    talkScore *= 100;
-    if (isNaN(examScore)) examScore = 1;
-    examScore *= 100;
-    if (isNaN(diagnosisScore)) diagnosisScore = 1;
-    diagnosisScore *= 100;
-
-    return {
-      talkScore,
-      examScore,
-      diagnosisScore,
-    };
-  }, [caseExplorationStatus]);
-
   return (
     <Flex align="center" direction="column" h="100%" pb="5" pt="8" px="8">
       <Text variant="page_title">Caso completato</Text>
@@ -293,12 +261,12 @@ const FinishedDiagnosisStep = ({
         >
           <PercentageBarItem
             title="pertinenza delle domande"
-            percentage={talkScore}
+            percentage={69}
             iconSrc={TalkIcon}
           />
           <PercentageBarItem
             title="pertinenza degli esami"
-            percentage={examScore}
+            percentage={69}
             iconSrc={ExamIcon}
             percentageBarProps={{
               innerProps: { bgColor: 'secondary.1000' },
@@ -306,7 +274,7 @@ const FinishedDiagnosisStep = ({
           />
           <PercentageBarItem
             title="pertinenza della diagnosi"
-            percentage={diagnosisScore}
+            percentage={69}
             iconSrc={DiagnosisIcon}
             percentageBarProps={{
               innerProps: { bgColor: 'error' },
