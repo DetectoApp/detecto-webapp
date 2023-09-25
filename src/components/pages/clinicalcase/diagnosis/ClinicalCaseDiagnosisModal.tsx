@@ -27,9 +27,7 @@ export const ClinicalCaseDiagnosisModal = ({
   clinicalCase,
   ...modalProps
 }: { clinicalCase: ClinicalCase } & Partial<Omit<ModalProps, 'children'>>) => {
-  const [page, setPage] = useState<
-    'quiz' | 'finishedScores' | 'finishedAnswers'
-  >('quiz');
+  const [page, setPage] = useState<'quiz' | 'finished'>('quiz');
 
   const getPanelToRender = () => {
     switch (page) {
@@ -37,29 +35,11 @@ export const ClinicalCaseDiagnosisModal = ({
         return (
           <QuizDiagnosisStep
             clinicalCase={clinicalCase}
-            onLastConfirm={() => setPage('finishedScores')}
+            onLastConfirm={() => setPage('finished')}
           />
         );
-      case 'finishedScores':
-        return (
-          <FinishedDiagnosisStep
-            clinicalCase={clinicalCase}
-            step="scores"
-            onChangeTab={() => {
-              setPage('finishedAnswers');
-            }}
-          />
-        );
-      case 'finishedAnswers':
-        return (
-          <FinishedDiagnosisStep
-            clinicalCase={clinicalCase}
-            step="answers"
-            onChangeTab={() => {
-              setPage('finishedScores');
-            }}
-          />
-        );
+      case 'finished':
+        return <FinishedDiagnosisStep clinicalCase={clinicalCase} />;
       default:
         return null;
     }
@@ -198,12 +178,8 @@ const QuizDiagnosisStep = ({
 };
 
 const FinishedDiagnosisStep = ({
-  step,
-  onChangeTab,
   clinicalCase,
 }: {
-  step: 'scores' | 'answers';
-  onChangeTab: () => void;
   clinicalCase: ClinicalCase;
 }) => {
   const caseExplorationStatus = useCaseExplorationStore();
@@ -218,74 +194,36 @@ const FinishedDiagnosisStep = ({
         objectFit="cover"
         mb="2"
       />
-      {step === 'answers' ? (
-        <ExpandableLogoContainer
-          title="Risoluzione del caso"
-          titleIconUrl={DiagnosisIcon}
-          titleBackgroundColor="white"
-          w="100%"
-        >
-          <Text variant="regular_20_1p">
-            {clinicalCase.case_details?.solution ?? 'TODO MANCA A DB'}
-          </Text>
-          <Flex ml="auto" gap="2">
-            <Button
-              variant="risen"
-              onClick={() => {
-                alert('TODO');
-              }}
-            >
-              NON CHIARO
-            </Button>
-            <Button
-              variant="risen"
-              onClick={() => {
-                alert('TODO');
-              }}
-            >
-              CHIARO
-            </Button>
-          </Flex>
-        </ExpandableLogoContainer>
-      ) : (
-        <Flex
-          direction="column"
-          w="100%"
-          align="center"
-          gap="6"
-          zIndex="1"
-          borderRadius="24px"
-          borderColor="primary"
-          borderWidth="4px"
-          p="20px 24px 20px 40px"
-        >
-          <PercentageBarItem
-            title="pertinenza delle domande"
-            percentage={69}
-            iconSrc={TalkIcon}
-          />
-          <PercentageBarItem
-            title="pertinenza degli esami"
-            percentage={69}
-            iconSrc={ExamIcon}
-            percentageBarProps={{
-              innerProps: { bgColor: 'secondary.1000' },
+      <ExpandableLogoContainer
+        title="Risoluzione del caso"
+        titleIconUrl={DiagnosisIcon}
+        titleBackgroundColor="white"
+        w="100%"
+      >
+        <Text variant="regular_20_1p">
+          {clinicalCase.case_details?.solution ?? 'TODO MANCA A DB'}
+        </Text>
+        <Flex ml="auto" gap="2">
+          <Button
+            variant="risen"
+            onClick={() => {
+              alert('TODO');
             }}
-          />
-          <PercentageBarItem
-            title="pertinenza della diagnosi"
-            percentage={69}
-            iconSrc={DiagnosisIcon}
-            percentageBarProps={{
-              innerProps: { bgColor: 'error' },
+          >
+            NON CHIARO
+          </Button>
+          <Button
+            variant="risen"
+            onClick={() => {
+              alert('TODO');
             }}
-          />
+          >
+            CHIARO
+          </Button>
         </Flex>
-      )}
+      </ExpandableLogoContainer>
+
       <Flex mt="5" justify="space-between" w="100%">
-        <Button variant="risen" onClick={onChangeTab}>
-          {step === 'answers' ? 'GUARDA IL PUNTEGGIO' : 'CONTROLLA LE RISPOSTE'}
-        </Button>
         <Link to="/">
           <Button variant="risen_secondary">TERMINA</Button>
         </Link>

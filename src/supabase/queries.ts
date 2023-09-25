@@ -16,7 +16,9 @@ import {
 export const fetchCase = async (id: string) => {
   const { data, error } = await supabase
     .from('clinical_case')
-    .select('*')
+    .select(
+      `*, case_details:case_details_id(*, specialization:specialization_id(*))`
+    )
     .eq('id', id)
     .single();
 
