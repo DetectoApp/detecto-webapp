@@ -13,6 +13,7 @@ import {
   Relationship,
   Symptom,
 } from '../types/talkTypes';
+import { capitalizeFirstLetter } from '../intl';
 
 export const fetchCase = async (id: string) => {
   const { data, error } = await supabase
@@ -39,7 +40,7 @@ export const fetchTalks = async (clinicalCaseId: string) => {
 
   const { data: previousVisit, error: previousVisitError } = await supabase
     .from<PreviousVisit>('previous_visit')
-    .select('*')
+    .select('*, specialist: specialist_id(*)')
     .eq('clinical_case', clinicalCaseId);
 
   if (previousVisitError) {
@@ -49,14 +50,16 @@ export const fetchTalks = async (clinicalCaseId: string) => {
       ...previousVisit.map(e => ({
         ...e,
         type: TalkTypes.PreviousVisit,
-        title: e.specialist_type,
-        answer: e.diagnosis_short,
+        title: e.specialist.name,
+        answer: e.diagnosis_reason,
       }))
     );
 
   const { data: relationship, error: relationshipError } = await supabase
     .from<Relationship>('relationship')
-    .select('*')
+    .select(
+      '*, family_member_grade:family_member_grade_id(*), health_state:health_state(*)'
+    )
     .eq('clinical_case', clinicalCaseId);
 
   if (relationshipError) {
@@ -66,7 +69,10 @@ export const fetchTalks = async (clinicalCaseId: string) => {
       ...relationship.map(e => ({
         ...e,
         type: TalkTypes.Relationship,
-        title: e.family_member_grade + e.health_state,
+        title:
+          capitalizeFirstLetter(e.family_member_grade.name) +
+          ' ' +
+          e.health_state.name,
         answer: e.details,
       }))
     );

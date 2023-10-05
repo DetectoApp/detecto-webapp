@@ -9,9 +9,8 @@ export enum Specialization {
 }
 
 export enum CaseStatus {
-  'PARTUT' = 1,
-  'APPROVAT' = 2,
-  'CHEACUMBINAT' = 2,
+  'DRAFT' = 0,
+  'SAVED' = 1,
 }
 
 export enum AvatarTypes {

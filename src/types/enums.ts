@@ -1,8 +1,3 @@
-export enum SpecialistType {
-  'OMEOPATA' = '1',
-  'MINCHIOLOGO' = '2',
-}
-
 export enum InstrumentalExamName {
   'Ditino_Supposto' = '1',
   'Radiografia' = '2',

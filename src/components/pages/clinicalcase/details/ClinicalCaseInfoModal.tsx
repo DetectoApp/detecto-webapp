@@ -1,20 +1,10 @@
-import {
-  Flex,
-  ModalProps,
-  Text,
-  Image,
-  Box,
-  FlexProps,
-} from '@chakra-ui/react';
-import React, { ReactNode } from 'react';
-import { ClinicalCase } from '../../../../types/types';
-import {
-  ClinicalCaseAvatar,
-  ClinicalCaseAvatarBoxed,
-} from '../../../ClinicalCaseAvatar';
-import { ModalContainer } from '../../../ModalComponents';
-import { ClinicalCaseGender } from '../../../../components/ClinicalCaseGender';
+import { Flex, FlexProps, Image, ModalProps, Text } from '@chakra-ui/react';
+import React from 'react';
 import PatientIcon from '../../../../assets/patient_icon.svg';
+import { ClinicalCaseGender } from '../../../../components/ClinicalCaseGender';
+import { ClinicalCase } from '../../../../types/types';
+import { ClinicalCaseAvatarBoxed } from '../../../ClinicalCaseAvatar';
+import { ModalContainer } from '../../../ModalComponents';
 
 export const ClinicalCaseInfoModal = ({
   clinicalCase,
@@ -44,6 +34,7 @@ export const ClinicalCaseInfoModal = ({
             title="Peso"
             flex="1"
             text={clinicalCase.patient_weight.toString()}
+            unit="kg"
           />
 
           <InfoBox
@@ -51,6 +42,7 @@ export const ClinicalCaseInfoModal = ({
             title="Altezza"
             flex="1"
             text={clinicalCase.patient_height.toString()}
+            unit="cm"
           />
         </Flex>
         <InfoBox
@@ -68,11 +60,13 @@ const InfoBox = ({
   iconUrl,
   title,
   text,
+  unit,
   ...props
 }: {
   iconUrl: string;
   title: string;
   text: string;
+  unit?: string;
 } & Omit<FlexProps, 'children'>) => {
   return (
     <Flex direction="column" {...props}>
@@ -80,14 +74,28 @@ const InfoBox = ({
         <Image src={iconUrl} />
         <Text variant="H1">{title}</Text>
       </Flex>
-      <Box
+      <Flex
         borderWidth="3px"
         borderColor="interactions.1000"
         borderRadius="16px"
-        p="4"
+        justifyContent="space-between"
+        overflow="hidden"
       >
-        <Text variant="regular_20_1p_140p">{text}</Text>
-      </Box>
+        <Text variant="regular_20_1p_140p" p="4">
+          {text}
+        </Text>
+        {unit ? (
+          <Flex
+            h="100%"
+            w="32px"
+            backgroundColor="accent"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Text>{unit}</Text>
+          </Flex>
+        ) : null}
+      </Flex>
     </Flex>
   );
 };

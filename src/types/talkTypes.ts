@@ -1,4 +1,3 @@
-import { SpecialistType } from './enums';
 import { BodyDistrict } from './examTypes';
 
 export enum TalkTypes {
@@ -14,6 +13,21 @@ export interface BodySymptom {
   body_district: BodyDistrict;
 }
 
+export interface FamilyMemberGrade {
+  id: number;
+  name: string;
+}
+
+export interface HealthState {
+  id: number;
+  name: string;
+}
+
+export interface Specialist {
+  id: number;
+  name: string;
+}
+
 export interface ClinicalCaseTalk {
   id: number;
   is_misleading: boolean;
@@ -21,14 +35,14 @@ export interface ClinicalCaseTalk {
 }
 
 export interface PreviousVisit extends ClinicalCaseTalk {
-  specialist_type: SpecialistType;
+  specialist: Specialist;
   diagnosis_short: string;
   diagnosis_reason: string;
 }
 
 export interface Relationship extends ClinicalCaseTalk {
-  family_member_grade: string;
-  health_state: string;
+  family_member_grade: FamilyMemberGrade;
+  health_state: HealthState;
   details: string;
 }
 

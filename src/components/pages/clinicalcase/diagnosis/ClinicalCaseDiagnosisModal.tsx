@@ -153,7 +153,7 @@ const QuizDiagnosisStep = ({
         />
       </Flex>
       <Text mt="12">{currentQuiz?.question}</Text>
-      <Flex align="center" direction="column" mt="10" gap="2" w="100%">
+      <Flex align="center" direction="column" mt="10" mb="4" gap="2" w="100%">
         {currentQuiz?.answers.map(a => {
           return (
             <Button
@@ -232,6 +232,7 @@ const FinishedDiagnosisStep = ({
         titleIconUrl={DiagnosisIcon}
         titleBackgroundColor="white"
         w="100%"
+        mb="2"
       >
         <Text variant="regular_20_1p">
           {clinicalCase.case_details?.solution ?? 'TODO MANCA A DB'}
@@ -256,6 +257,10 @@ const FinishedDiagnosisStep = ({
         </Flex>
       </ExpandableLogoContainer>
 
+      <Text variant="page_title_sm" mb="4" mt="6">
+        Parla col paziente
+      </Text>
+
       {playedTalks.map(talkStatus => {
         const talk = availableTalks?.find(talk => talk.id === talkStatus.id);
         return (
@@ -264,6 +269,7 @@ const FinishedDiagnosisStep = ({
             titleIconUrl={TalkIcon}
             titleBackgroundColor="white"
             w="100%"
+            mb="2"
           >
             <Text variant="regular_20_1p">
               {talkStatus.status === 'OPENED'
@@ -277,14 +283,19 @@ const FinishedDiagnosisStep = ({
         );
       })}
 
+      <Text variant="page_title_sm" mb="4" mt="6">
+        Prescrivi Esami
+      </Text>
+
       {playedExams.map(examStatus => {
         const exam = availableExams?.find(exam => exam.id === examStatus.id);
         return (
           <ExpandableLogoContainer
             title={exam?.title ?? ''}
             titleIconUrl={ExamIcon}
-            titleBackgroundColor="white"
+            titleBackgroundColor="secondary.1000"
             w="100%"
+            mb="2"
           >
             <Text variant="regular_20_1p">
               {examStatus.status === 'OPENED'
@@ -298,14 +309,21 @@ const FinishedDiagnosisStep = ({
         );
       })}
 
+      <Text variant="page_title_sm" mb="4" mt="6">
+        Quiz
+      </Text>
+
       {playedQuizzes.map(quizStatus => {
-        const quiz = availableQuizzes?.find(quiz => quiz.id === quizStatus.id);
+        const quiz = availableQuizzes?.find(
+          quiz => quiz.id === quizStatus.quiz
+        );
         return (
           <ExpandableLogoContainer
             title={quiz?.question ?? ''}
             titleIconUrl={DiagnosisIcon}
-            titleBackgroundColor="white"
+            titleBackgroundColor="error"
             w="100%"
+            mb="2"
           >
             <Text variant="regular_20_1p">{quizStatus.text}</Text>
             <Text variant="regular_20_1p">

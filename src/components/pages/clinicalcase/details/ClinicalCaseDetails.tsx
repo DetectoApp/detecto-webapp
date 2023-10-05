@@ -153,7 +153,9 @@ export default function ClinicalCaseDetails() {
         <Link to="/list">
           <Image w="64px" h="64px" src={CrossIcon} />
         </Link>
-        <Text variant="patient_name_details">{clinicalCase.patient_name}</Text>
+        <Text variant="patient_name_details" zIndex={1}>
+          {clinicalCase.patient_name}
+        </Text>
       </Flex>
       <Flex position="relative" flexGrow={1}>
         <ClinicalCaseAvatar
@@ -167,8 +169,8 @@ export default function ClinicalCaseDetails() {
         <Flex direction="row" gap="2" mx="auto" mt="auto">
           <Button
             onClick={() => setModalShowing('talk')}
-            py="2"
-            w="328px"
+            py="4"
+            flex="1"
             h="auto"
             display="flex"
             flexDirection="column"
@@ -183,8 +185,8 @@ export default function ClinicalCaseDetails() {
           <Button
             variant="risen_secondary"
             onClick={() => setModalShowing('exam')}
-            py="2"
-            w="328px"
+            py="4"
+            flex="1"
             h="auto"
             display="flex"
             flexDirection="column"
@@ -223,7 +225,9 @@ export default function ClinicalCaseDetails() {
           <Text variant="bold_24_1p">Info paziente</Text>
         </Flex>
         <Flex gap="2" align="center">
-          <Text variant="bold_24_1p">Vai alla diagnosi</Text>
+          <Text variant="bold_24_1p" textAlign="right">
+            Vai alla diagnosi
+          </Text>
           <Button
             onClick={() => setModalShowing('diagnosis')}
             isDisabled={!areAllCasesAnswered}

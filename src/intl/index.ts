@@ -8,3 +8,7 @@ const italian: { [key: string]: string } = {
 };
 
 export const getString = (key: string) => italian[key];
+
+export const capitalizeFirstLetter = (input: string) => {
+  return input.charAt(0).toUpperCase() + input.slice(1);
+};

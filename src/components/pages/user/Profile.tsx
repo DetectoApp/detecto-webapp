@@ -67,7 +67,7 @@ export default function Profile() {
       />
 
       <form onSubmit={handleSubmit}>
-        <VStack mt="10" gap="2">
+        <VStack mt="10" gap="2" mb="4">
           <CustomInput
             label="Email"
             h="100%"
