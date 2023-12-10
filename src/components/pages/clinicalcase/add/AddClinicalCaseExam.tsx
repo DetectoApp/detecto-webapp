@@ -1,5 +1,5 @@
-import { ExamTypes } from '../../../types/enums';
-import { AllOfExam } from '../../../types/examTypes';
+import { ExamTypes } from '../../../../types/enums';
+import { AllOfExam } from '../../../../types/examTypes';
 
 type ClinicalCaseExamInput = AllOfExam & {
   examType: ExamTypes;

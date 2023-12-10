@@ -1,4 +1,12 @@
-import { Box, Button, Flex, Grid, Skeleton, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  Grid,
+  Skeleton,
+  Text,
+  Image,
+} from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import supabase from '../../../supabase';
@@ -137,6 +145,33 @@ export default function ClinicalCaseList() {
             </Flex>
           </Button>
         ))}
+
+        <Button
+          height="auto"
+          p={3}
+          borderRadius="24px"
+          onClick={() => {
+            navigate(`/demoadd`);
+          }}
+        >
+          <Flex direction="column" w="100%" mb="auto">
+            <Flex
+              align="center"
+              justify="center"
+              borderWidth="4px"
+              borderColor="primary"
+              borderRadius="16px"
+              mb="2"
+              h="166px"
+              w="100%"
+            >
+              <Image src="TODO" height="80%" mt="auto" />
+            </Flex>
+            <Text variant="bold_24_1p" mb="auto">
+              Crea caso clinico
+            </Text>
+          </Flex>
+        </Button>
       </Grid>
     </Flex>
   );

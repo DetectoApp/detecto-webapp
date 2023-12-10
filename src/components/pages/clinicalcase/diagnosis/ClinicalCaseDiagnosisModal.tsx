@@ -27,6 +27,7 @@ import { ExamTypes, TalkTypes } from '../../../../types/enums';
 import { OneOfExam } from '../../../../types/examTypes';
 import { OneOfTalk } from '../../../../types/talkTypes';
 import { ClinicalCase, Quiz, QuizAnswer } from '../../../../types/types';
+import { ChoiceButtonGroup } from '../../../../components/inputs/ChoiceButtonGroup';
 
 export const ClinicalCaseDiagnosisModal = ({
   clinicalCase,
@@ -153,28 +154,14 @@ const QuizDiagnosisStep = ({
         />
       </Flex>
       <Text mt="12">{currentQuiz?.question}</Text>
-      <Flex align="center" direction="column" mt="10" mb="4" gap="2" w="100%">
-        {currentQuiz?.answers.map(a => {
-          return (
-            <Button
-              key={a.id}
-              width="100%"
-              onClick={() => setQuizStatus(currentQuiz.id.toString(), a)}
-              isDisabled={
-                !!currentQuizStatus && currentQuizStatus.id !== a.id
-                //TODO
-              }
-              variant={
-                !currentQuizStatus || currentQuizStatus.id !== a.id
-                  ? 'risen'
-                  : 'risen_secondary'
-              }
-            >
-              {a.text}
-            </Button>
-          );
-        })}
-      </Flex>
+
+      {currentQuiz ? (
+        <ChoiceButtonGroup
+          values={currentQuiz.answers}
+          currentChoiceValue={currentQuizStatus}
+          onSelect={value => setQuizStatus(currentQuiz.id.toString(), value)}
+        />
+      ) : null}
       <Button
         mt="auto"
         ml="auto"
