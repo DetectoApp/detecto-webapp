@@ -10,13 +10,15 @@ import { useCaseExplorationStore } from '../../../../store';
 import {
   fetchCase,
   fetchExams,
-  fetchQuizzes,
+  fetchDiagnosisQuestions,
   fetchTalks,
+  ClinicalCaseDataType,
+  OneOfExamDataType,
+  OneOfTalkDataType,
 } from '../../../../supabase/queries';
 import { ExamTypes, TalkTypes } from '../../../../types/enums';
 import { OneOfExam } from '../../../../types/examTypes';
 import { OneOfTalk } from '../../../../types/talkTypes';
-import { ClinicalCase, Quiz, QuizAnswer } from '../../../../types/types';
 import { ClinicalCaseAvatar } from '../../../ClinicalCaseAvatar';
 import { ClinicalCaseDiagnosisModal } from '../diagnosis/ClinicalCaseDiagnosisModal';
 import { ClinicalCaseExamsModal } from '../exams/ClinicalCaseExamsModal';
@@ -27,26 +29,35 @@ export default function ClinicalCaseDetails() {
   const { id } = useParams<{ id: string }>();
 
   const [
-    { clinicalCase, availableExams, availableTalks, availableQuizzes },
+    {
+      clinicalCase,
+      availableExams,
+      availableTalks,
+      availableDiagnosisQuestions,
+    },
     setClinicalCase,
   ] = useState<{
-    clinicalCase: ClinicalCase | null;
+    clinicalCase: ClinicalCaseDataType | null;
     availableExams:
-      | (OneOfExam & { type: ExamTypes; answer: string; title: string })[]
-      | null;
-    availableTalks:
-      | (OneOfTalk & { type: TalkTypes; answer: string; title: string })[]
-      | null;
-    availableQuizzes:
-      | (Quiz & {
-          answers: QuizAnswer[];
+      | (OneOfExamDataType & {
+          type: ExamTypes;
+          answer: string;
+          title: string;
         })[]
       | null;
+    availableTalks:
+      | (OneOfTalkDataType & {
+          type: TalkTypes;
+          answer: string;
+          title: string;
+        })[]
+      | null;
+    availableDiagnosisQuestions: any[] | null;
   }>({
     clinicalCase: null,
     availableTalks: null,
     availableExams: null,
-    availableQuizzes: null,
+    availableDiagnosisQuestions: null,
   });
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -60,25 +71,24 @@ export default function ClinicalCaseDetails() {
       const clinicalCase = await fetchCase(id);
       const availableTalks = await fetchTalks(id);
       const availableExams = await fetchExams(id);
-      const availableQuizzes = await fetchQuizzes(id);
+      const availableDiagnosisQuestions = await fetchDiagnosisQuestions(id);
       setClinicalCase({
         clinicalCase,
         availableExams,
         availableTalks,
-        availableQuizzes,
+        availableDiagnosisQuestions,
       });
       setLoading(false);
     };
     if (id) getData(id);
   }, [id]);
 
-  const { playedTalks, playedExams, playedQuizzes } = useCaseExplorationStore(
-    s => ({
+  const { playedTalks, playedExams, playedDiagnosisQuestions } =
+    useCaseExplorationStore(s => ({
       playedTalks: Object.values(s.talkStatuses),
       playedExams: Object.values(s.examStatuses),
-      playedQuizzes: Object.values(s.quizAnswers),
-    })
-  );
+      playedDiagnosisQuestions: Object.values(s.diagnosisquestionAnswers),
+    }));
 
   if (loading) {
     return (
@@ -113,7 +123,7 @@ export default function ClinicalCaseDetails() {
       case 'exam':
         return (
           <ClinicalCaseExamsModal
-            exams={availableExams!}
+            exams={availableExams ?? []}
             isOpen
             onClose={() => setModalShowing(undefined)}
           />
@@ -121,7 +131,7 @@ export default function ClinicalCaseDetails() {
       case 'talk':
         return (
           <ClinicalCaseTalksModal
-            talks={availableTalks!}
+            talks={availableTalks ?? []}
             isOpen
             onClose={() => setModalShowing(undefined)}
           />
@@ -133,8 +143,8 @@ export default function ClinicalCaseDetails() {
             playedTalks={playedTalks}
             availableExams={availableExams}
             playedExams={playedExams}
-            availableQuizzes={availableQuizzes}
-            playedQuizzes={playedQuizzes}
+            availableDiagnosisQuestions={availableDiagnosisQuestions}
+            playedDiagnosisQuestions={playedDiagnosisQuestions}
             clinicalCase={clinicalCase}
             isOpen
             onClose={() => setModalShowing(undefined)}
@@ -159,7 +169,7 @@ export default function ClinicalCaseDetails() {
       </Flex>
       <Flex position="relative" flexGrow={1}>
         <ClinicalCaseAvatar
-          avatar={clinicalCase.avatar}
+          avatar={clinicalCase.avatar ?? 'ERROR'}
           w="236px"
           position="absolute"
           bottom="0"

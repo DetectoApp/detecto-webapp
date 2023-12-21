@@ -1,6 +1,13 @@
 import supabase from '../../supabase';
 import { UserLoginData, UserRegistrationData } from '../../types/types';
-import { ApiError, Provider, Session, User } from '@supabase/supabase-js';
+import {
+  AuthError,
+  AuthResponse,
+  Provider,
+  Session,
+  User,
+  UserResponse,
+} from '@supabase/supabase-js';
 import React, {
   useState,
   useEffect,
@@ -10,32 +17,17 @@ import React, {
 } from 'react';
 
 interface AuthContextContent {
-  register: (data: UserRegistrationData) => Promise<{
-    user: User | null;
-    session: Session | null;
-    error: ApiError | null;
-  }>;
-  login: (data: UserLoginData) => Promise<{
-    session: Session | null;
-    user: User | null;
-    provider?: Provider;
-    url?: string | null;
-    error: ApiError | null;
-  }>;
-  edit: (data: UserRegistrationData) => Promise<{
-    data: User | null;
-    user: User | null;
-    error: ApiError | null;
-  }>;
-  logout: () => Promise<{ error: ApiError | null }>;
+  register: (data: UserRegistrationData) => Promise<AuthResponse>;
+  login: (data: UserLoginData) => Promise<AuthResponse>;
+  edit: (data: UserRegistrationData) => Promise<UserResponse>;
+  logout: () => Promise<{ error: AuthError | null }>;
   user: User | null;
 }
 
 const AuthContext = createContext<AuthContextContent>({
-  register: (data: UserRegistrationData) =>
-    supabase.auth.signUp(data, { data: data.data }),
-  login: (data: UserLoginData) => supabase.auth.signIn(data),
-  edit: (data: UserRegistrationData) => supabase.auth.update(data),
+  register: (data: UserRegistrationData) => supabase.auth.signUp(data),
+  login: (data: UserLoginData) => supabase.auth.signInWithPassword(data),
+  edit: (data: UserRegistrationData) => supabase.auth.updateUser(data),
   logout: () => supabase.auth.signOut(),
   user: null,
 });
@@ -63,7 +55,7 @@ export function AuthProvider({
     }
     async function getSession() {
       setLoading(false);
-      const { data: subscription } = supabase.auth.onAuthStateChange(
+      const { data } = supabase.auth.onAuthStateChange(
         async (event, session) => {
           if (session) {
             console.log('New session: ', session);
@@ -79,7 +71,7 @@ export function AuthProvider({
         }
       );
       return () => {
-        subscription?.unsubscribe();
+        data.subscription?.unsubscribe();
       };
     }
     getSession();
@@ -87,8 +79,8 @@ export function AuthProvider({
 
   const value: AuthContextContent = {
     register: (data: UserRegistrationData) => supabase.auth.signUp(data),
-    login: (data: UserLoginData) => supabase.auth.signIn(data),
-    edit: (data: UserRegistrationData) => supabase.auth.update(data),
+    login: (data: UserLoginData) => supabase.auth.signInWithPassword(data),
+    edit: (data: UserRegistrationData) => supabase.auth.updateUser(data),
     logout: () => supabase.auth.signOut(),
     user,
   };

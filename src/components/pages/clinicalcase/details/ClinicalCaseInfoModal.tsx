@@ -2,14 +2,15 @@ import { Flex, FlexProps, Image, ModalProps, Text } from '@chakra-ui/react';
 import React from 'react';
 import PatientIcon from '../../../../assets/patient_icon.svg';
 import { ClinicalCaseGender } from '../../../../components/ClinicalCaseGender';
-import { ClinicalCase } from '../../../../types/types';
+import { AvatarTypes, ClinicalCase, Gender } from '../../../../types/types';
 import { ClinicalCaseAvatarBoxed } from '../../../ClinicalCaseAvatar';
 import { ModalContainer } from '../../../ModalComponents';
+import { ClinicalCaseDataType } from '@/supabase/queries';
 
 export const ClinicalCaseInfoModal = ({
   clinicalCase,
   ...modalProps
-}: { clinicalCase: ClinicalCase } & Omit<ModalProps, 'children'>) => {
+}: { clinicalCase: ClinicalCaseDataType } & Omit<ModalProps, 'children'>) => {
   return (
     <ModalContainer
       {...modalProps}
@@ -19,12 +20,12 @@ export const ClinicalCaseInfoModal = ({
     >
       <Flex align="center" direction="column">
         <ClinicalCaseAvatarBoxed
-          avatar={clinicalCase.avatar}
+          avatar={clinicalCase.avatar ?? 'ERROR'}
           h="136px"
           w="136px"
           marginBottom={2}
         />
-        <ClinicalCaseGender gender={clinicalCase.gender} />
+        <ClinicalCaseGender gender={clinicalCase.gender ?? 'ERROR'} />
         <Text mb="6" variant="bold_28_1p">
           {clinicalCase.patient_name}
         </Text>

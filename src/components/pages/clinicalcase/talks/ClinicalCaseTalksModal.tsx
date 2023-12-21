@@ -16,15 +16,20 @@ import { TalkTypes } from '../../../../types/enums';
 import { OneOfTalk } from '../../../../types/talkTypes';
 import { ListItemButton, ModalContainer } from '../../../ModalComponents';
 import { getString } from '../../../../intl';
+import { OneOfTalkDataType } from '@/supabase/queries';
 
 const ClinicalCaseTalksModalList = ({
   setTalk,
   talks,
 }: {
   setTalk: (
-    talk: OneOfTalk & { type: TalkTypes; answer: string; title: string }
+    talk: OneOfTalkDataType & { type: TalkTypes; answer: string; title: string }
   ) => void;
-  talks: (OneOfTalk & { type: TalkTypes; answer: string; title: string })[];
+  talks: (OneOfTalkDataType & {
+    type: TalkTypes;
+    answer: string;
+    title: string;
+  })[];
 }) => {
   const [talkFilter, setTalkFilter] = useState<TalkTypes | undefined>(
     undefined
@@ -100,7 +105,7 @@ const TalkModalDetail = ({
   talk,
   setTalk,
 }: {
-  talk: OneOfTalk & { type: TalkTypes; answer: string; title: string };
+  talk: OneOfTalkDataType & { type: TalkTypes; answer: string; title: string };
   setTalk: (talk: undefined) => void;
 }) => {
   const { talkStatus, setTalkStatus } = useCaseExplorationStore(s => ({
@@ -177,14 +182,15 @@ export const ClinicalCaseTalksModal = ({
   ...modalProps
 }: {
   talks:
-    | (OneOfTalk & {
+    | (OneOfTalkDataType & {
         type: TalkTypes;
         answer: string;
         title: string;
       })[];
 } & Omit<ModalProps, 'children'>) => {
   const [talk, setTalk] = useState<
-    (OneOfTalk & { type: TalkTypes; answer: string; title: string }) | undefined
+    | (OneOfTalkDataType & { type: TalkTypes; answer: string; title: string })
+    | undefined
   >(undefined);
 
   return (

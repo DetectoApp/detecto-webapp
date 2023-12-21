@@ -11,9 +11,9 @@ import {
 import React, { useMemo, useState } from 'react';
 import { useCaseExplorationStore } from '../../../../store';
 import { ExamTypes } from '../../../../types/enums';
-import { OneOfExam } from '../../../../types/examTypes';
 import { ListItemButton, ModalContainer } from '../../../ModalComponents';
 
+import { OneOfExamDataType } from '@/supabase/queries';
 import BackIcon from '../../../../assets/back.svg';
 import ExamIcon from '../../../../assets/exam_icon.svg';
 import TalkIcon from '../../../../assets/talk_icon.svg';
@@ -24,9 +24,13 @@ const ClinicalCaseExamsModalList = ({
   exams,
 }: {
   setExam: (
-    exam: OneOfExam & { type: ExamTypes; answer: string; title: string }
+    exam: OneOfExamDataType & { type: ExamTypes; answer: string; title: string }
   ) => void;
-  exams: (OneOfExam & { type: ExamTypes; answer: string; title: string })[];
+  exams: (OneOfExamDataType & {
+    type: ExamTypes;
+    answer: string;
+    title: string;
+  })[];
 }) => {
   const [examFilter, setExamFilter] = useState<ExamTypes | undefined>(
     undefined
@@ -101,7 +105,7 @@ const ExamModalDetail = ({
   exam,
   setExam,
 }: {
-  exam: OneOfExam & { type: ExamTypes; answer: string; title: string };
+  exam: OneOfExamDataType & { type: ExamTypes; answer: string; title: string };
   setExam: (exam: undefined) => void;
 }) => {
   const { examStatus, setExamStatus } = useCaseExplorationStore(s => ({
@@ -177,10 +181,15 @@ export const ClinicalCaseExamsModal = ({
   exams,
   ...modalProps
 }: {
-  exams: (OneOfExam & { type: ExamTypes; answer: string; title: string })[];
+  exams: (OneOfExamDataType & {
+    type: ExamTypes;
+    answer: string;
+    title: string;
+  })[];
 } & Omit<ModalProps, 'children'>) => {
   const [exam, setExam] = useState<
-    (OneOfExam & { type: ExamTypes; answer: string; title: string }) | undefined
+    | (OneOfExamDataType & { type: ExamTypes; answer: string; title: string })
+    | undefined
   >(undefined);
 
   return (

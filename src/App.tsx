@@ -13,11 +13,9 @@ import ClinicalCaseList from './components/pages/clinicalcase/ClinicalCaseList';
 import AddClinicalCase from './components/pages/clinicalcase/add/AddClinicalCase';
 import Login from './components/pages/user/Login';
 import Register from './components/pages/user/Register';
-import { AuthProvider, useAuth } from './components/providers/AuthProvider';
+import { AuthProvider } from './components/providers/AuthProvider';
 import Profile from './components/pages/user/Profile';
 import Homepage from './components/pages/Homepage';
-import AddClinicalCaseExam from './components/pages/clinicalcase/add/AddClinicalCaseExam';
-import AddClinicalCaseTalk from './components/pages/clinicalcase/add/AddClinicalCaseTalk';
 import { Flex } from '@chakra-ui/react';
 import './styles.css';
 

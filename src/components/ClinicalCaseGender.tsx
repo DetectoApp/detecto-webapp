@@ -7,7 +7,7 @@ import Female from '../assets/female.svg';
 export const ClinicalCaseGender = ({
   gender,
   ...props
-}: { gender: Gender } & ImageProps) => {
+}: { gender: string } & ImageProps) => {
   switch (gender) {
     case Gender.male:
       return <Image {...props} src={Male} />;

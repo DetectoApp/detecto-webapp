@@ -12,28 +12,23 @@ import { useNavigate } from 'react-router-dom';
 import supabase from '../../../supabase';
 import { CaseStatus, ClinicalCase } from '../../../types/types';
 import { ClinicalCaseAvatarBoxed } from '../../ClinicalCaseAvatar';
+import { ClinicalCaseDataType, fetchCases } from '../../../supabase/queries';
 
 export default function ClinicalCaseList() {
   const [{ cases, draftCases }, setClinicalCase] = useState<{
-    cases: ClinicalCase[];
-    draftCases: ClinicalCase[];
+    cases: ClinicalCaseDataType[];
+    draftCases: ClinicalCaseDataType[];
   }>({ cases: [], draftCases: [] });
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchClinicalCases = async () => {
-      const { data, error: clinicalCaseError } = await supabase
-        .from<ClinicalCase>('clinical_case')
-        .select(
-          `*, case_details:case_details_id(*, specialization:specialization_id(*))`
-        );
-      if (clinicalCaseError) {
-        console.log(clinicalCaseError);
-      }
-      const cases = data?.filter(c => c.case_status === CaseStatus.SAVED) ?? [];
+      const cases = await fetchCases();
+      const savedCases =
+        cases?.filter(c => c.case_status === CaseStatus.SAVED) ?? [];
       const draftCases =
-        data?.filter(c => c.case_status === CaseStatus.DRAFT) ?? [];
-      setClinicalCase({ cases, draftCases });
+        cases?.filter(c => c.case_status === CaseStatus.DRAFT) ?? [];
+      setClinicalCase({ cases: savedCases, draftCases });
       setLoading(false);
     };
 
@@ -80,7 +75,7 @@ export default function ClinicalCaseList() {
           >
             <Flex direction="column" w="100%">
               <ClinicalCaseAvatarBoxed
-                avatar={clinicalCase.avatar}
+                avatar={clinicalCase.avatar ?? 'ERROR'}
                 mb="2"
                 h="166px"
                 w="100%"
@@ -97,7 +92,7 @@ export default function ClinicalCaseList() {
                 height="40px"
               >
                 <Text variant="specialty_name_list">
-                  {clinicalCase.case_details?.specialization.name ??
+                  {clinicalCase.case_details?.specialization?.name ??
                     'TODO MANCA A DB'}
                 </Text>
               </Flex>
@@ -121,7 +116,7 @@ export default function ClinicalCaseList() {
           >
             <Flex direction="column" w="100%">
               <ClinicalCaseAvatarBoxed
-                avatar={clinicalCase.avatar}
+                avatar={clinicalCase.avatar ?? 'ERROR'}
                 mb="2"
                 h="166px"
                 w="100%"
@@ -138,7 +133,7 @@ export default function ClinicalCaseList() {
                 height="40px"
               >
                 <Text variant="specialty_name_list">
-                  {clinicalCase.case_details?.specialization.name ??
+                  {clinicalCase.case_details?.specialization?.name ??
                     'TODO MANCA A DB'}
                 </Text>
               </Flex>

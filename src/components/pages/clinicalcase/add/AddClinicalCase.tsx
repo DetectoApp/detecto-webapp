@@ -41,17 +41,7 @@ export default function AddClinicalCase() {
     },
     validationSchema: schema,
     onSubmit: async input => {
-      const { data, error } = await supabase
-        .from('clinical_case')
-        .insert([{ ...input, author: user?.id }]);
-
-      toast({
-        title: error?.message || 'Task added!',
-        position: 'top',
-        status: error ? 'error' : 'success',
-        duration: 2000,
-        isClosable: true,
-      });
+      alert({ ...input, author: user?.id });
     },
   });
 

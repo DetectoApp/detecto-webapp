@@ -6,7 +6,7 @@ import FemaleAvatar from '../assets/female_avatar.svg';
 export const ClinicalCaseAvatar = ({
   avatar,
   ...props
-}: { avatar: AvatarTypes } & ImageProps) => {
+}: { avatar: string } & ImageProps) => {
   switch (avatar) {
     case AvatarTypes.ADOLESCENT:
       return <Image {...props} src={FemaleAvatar} />;
@@ -23,7 +23,7 @@ export const ClinicalCaseAvatarBoxed = ({
   avatar,
   imageProps,
   ...props
-}: { imageProps?: ImageProps; avatar: AvatarTypes } & FlexProps) => (
+}: { imageProps?: ImageProps; avatar: string } & FlexProps) => (
   <Flex
     bgColor="accent"
     align="center"

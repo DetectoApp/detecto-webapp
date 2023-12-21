@@ -1,47 +1,138 @@
-import { Quiz, QuizAnswer } from '@/types/types';
 import supabase from '../supabase';
 import { ExamTypes, TalkTypes } from '../types/enums';
-import {
-  OneOfExam,
-  InstrumentalExam,
-  LaboratoryExam,
-  ObjectiveExam,
-} from '../types/examTypes';
-import {
-  OneOfTalk,
-  PreviousVisit,
-  Relationship,
-  Symptom,
-} from '../types/talkTypes';
 import { capitalizeFirstLetter } from '../intl';
+import { QueryData } from '@supabase/supabase-js';
 
-export const fetchCase = async (id: string) => {
-  const { data, error } = await supabase
+export const getClinicalCasesQuery = () =>
+  supabase
     .from('clinical_case')
-    .select(
-      `*, case_details:case_details_id(*, specialization:specialization_id(*))`
-    )
+    .select(`*, case_details(*, specialization(*))`);
+
+export const getClinicalCaseQuery = (id: string) =>
+  supabase
+    .from('clinical_case')
+    .select(`*, case_details(*, specialization(*))`)
     .eq('id', id)
     .single();
 
+const getPreviousVisitQuery = (clinicalCaseId: string) =>
+  supabase
+    .from('previous_visit')
+    .select('*, specialist(*)')
+    .eq('clinical_case', clinicalCaseId);
+
+const getSymptomQuery = (clinicalCaseId: string) =>
+  supabase
+    .from('symptom')
+    .select('*, body_symptom(*)')
+    .eq('clinical_case', clinicalCaseId);
+
+const getRelationshipQuery = (clinicalCaseId: string) =>
+  supabase
+    .from('relationship')
+    .select('*, family_member_grade(*), health_state(*)')
+    .eq('clinical_case', clinicalCaseId);
+
+const getInstrumentalExamQuery = (clinicalCaseId: string) =>
+  supabase
+    .from('instrumental_exam')
+    .select(`*, instrumental_exam_type(*)`)
+    .eq('clinical_case', clinicalCaseId);
+
+const getLaboratoryExamQuery = (clinicalCaseId: string) =>
+  supabase
+    .from('laboratory_exam')
+    .select(`*, laboratory_exam_type(*)`)
+    .eq('clinical_case', clinicalCaseId);
+
+const getObjectiveExamQuery = (clinicalCaseId: string) =>
+  supabase
+    .from('objective_exam')
+    .select(`*, body_district(*)`)
+    .eq('clinical_case', clinicalCaseId);
+
+const getDiagnosisQuestionsQuery = (clinicalCaseId: string) =>
+  supabase
+    .from('diagnosisquestion')
+    .select('*')
+    .eq('clinical_case', clinicalCaseId);
+
+export type ClinicalCaseDataType = QueryData<
+  ReturnType<typeof getClinicalCaseQuery>
+>;
+
+export type PreviousVisitDataType = QueryData<
+  ReturnType<typeof getPreviousVisitQuery>
+>[number];
+
+export type RelationshipDataType = QueryData<
+  ReturnType<typeof getRelationshipQuery>
+>[number];
+
+export type SymptomDataType = QueryData<
+  ReturnType<typeof getSymptomQuery>
+>[number];
+
+export type InstrumentalExamDataType = QueryData<
+  ReturnType<typeof getInstrumentalExamQuery>
+>[number];
+
+export type LaboratoryExamDataType = QueryData<
+  ReturnType<typeof getLaboratoryExamQuery>
+>[number];
+
+export type ObjectiveExamDataType = QueryData<
+  ReturnType<typeof getObjectiveExamQuery>
+>[number];
+
+export type DiagnosisQuestionDataType = QueryData<
+  ReturnType<typeof getDiagnosisQuestionsQuery>
+>[number];
+
+export type OneOfExamDataType =
+  | LaboratoryExamDataType
+  | InstrumentalExamDataType
+  | ObjectiveExamDataType;
+export type AllOfExamDataType = LaboratoryExamDataType &
+  InstrumentalExamDataType &
+  ObjectiveExamDataType;
+
+export type OneOfTalkDataType =
+  | RelationshipDataType
+  | PreviousVisitDataType
+  | SymptomDataType;
+export type AllOfTalkDataType = RelationshipDataType &
+  PreviousVisitDataType &
+  SymptomDataType;
+
+export const fetchCases = async () => {
+  const { data, error } = await getClinicalCasesQuery();
   if (error) {
     console.log(error);
+    return null;
+  } else {
+    return data;
+  }
+};
+
+export const fetchCase = async (id: string) => {
+  const { data, error } = await getClinicalCaseQuery(id);
+  if (error) {
+    console.log(error);
+    return null;
   } else {
     return data;
   }
 };
 
 export const fetchTalks = async (clinicalCaseId: string) => {
-  const talks: (OneOfTalk & {
+  const talks: (OneOfTalkDataType & {
     type: TalkTypes;
     answer: string;
     title: string;
   })[] = [];
-
-  const { data: previousVisit, error: previousVisitError } = await supabase
-    .from<PreviousVisit>('previous_visit')
-    .select('*, specialist: specialist_id(*)')
-    .eq('clinical_case', clinicalCaseId);
+  const { data: previousVisit, error: previousVisitError } =
+    await getPreviousVisitQuery(clinicalCaseId);
 
   if (previousVisitError) {
     console.log(previousVisitError);
@@ -50,17 +141,13 @@ export const fetchTalks = async (clinicalCaseId: string) => {
       ...previousVisit.map(e => ({
         ...e,
         type: TalkTypes.PreviousVisit,
-        title: e.specialist.name,
-        answer: e.diagnosis_reason,
+        title: e.specialist?.name ?? 'ERROR',
+        answer: e.diagnosis_reason ?? 'ERROR',
       }))
     );
 
-  const { data: relationship, error: relationshipError } = await supabase
-    .from<Relationship>('relationship')
-    .select(
-      '*, family_member_grade:family_member_grade_id(*), health_state:health_state(*)'
-    )
-    .eq('clinical_case', clinicalCaseId);
+  const { data: relationship, error: relationshipError } =
+    await getRelationshipQuery(clinicalCaseId);
 
   if (relationshipError) {
     console.log(relationshipError);
@@ -70,17 +157,16 @@ export const fetchTalks = async (clinicalCaseId: string) => {
         ...e,
         type: TalkTypes.Relationship,
         title:
-          capitalizeFirstLetter(e.family_member_grade.name) +
-          ' ' +
-          e.health_state.name,
+          capitalizeFirstLetter(e.family_member_grade?.name ?? 'ERROR') +
+            ' ' +
+            e.health_state?.name ?? 'ERROR',
         answer: e.details,
       }))
     );
 
-  const { data: symptom, error: symptomError } = await supabase
-    .from<Symptom>('symptom')
-    .select('*, body_symptom:body_symptom_id(*)')
-    .eq('clinical_case', clinicalCaseId);
+  const { data: symptom, error: symptomError } = await getSymptomQuery(
+    clinicalCaseId
+  );
 
   if (symptomError) {
     console.log(symptomError);
@@ -89,8 +175,8 @@ export const fetchTalks = async (clinicalCaseId: string) => {
       ...symptom.map(e => ({
         ...e,
         type: TalkTypes.Symptom,
-        title: e.body_symptom.name,
-        answer: e.symptom_details,
+        title: e.body_symptom?.name ?? 'ERROR',
+        answer: e.symptom_details ?? 'ERROR',
       }))
     );
 
@@ -98,18 +184,13 @@ export const fetchTalks = async (clinicalCaseId: string) => {
 };
 
 export const fetchExams = async (clinicalCaseId: string) => {
-  const exams: (OneOfExam & {
+  const exams: (OneOfExamDataType & {
     type: ExamTypes;
     answer: string;
     title: string;
   })[] = [];
-
   const { data: instrumentalExam, error: instrumentalExamError } =
-    await supabase
-      .from<InstrumentalExam>('instrumental_exam')
-      .select(`*, instrumental_exam_type:exam_type_id(*)`)
-      .eq('clinical_case', clinicalCaseId);
-
+    await getInstrumentalExamQuery(clinicalCaseId);
   if (instrumentalExamError) {
     console.log(instrumentalExamError);
   } else
@@ -117,15 +198,13 @@ export const fetchExams = async (clinicalCaseId: string) => {
       ...instrumentalExam.map(e => ({
         ...e,
         type: ExamTypes.InstrumentalExam,
-        title: e.instrumental_exam_type.name,
+        title: e.instrumental_exam_type?.name ?? 'ERROR',
         answer: e.details,
       }))
     );
 
-  const { data: laboratoryExam, error: laboratoryExamError } = await supabase
-    .from<LaboratoryExam>('laboratory_exam')
-    .select(`*, laboratory_exam_type:exam_type_id(*)`)
-    .eq('clinical_case', clinicalCaseId);
+  const { data: laboratoryExam, error: laboratoryExamError } =
+    await getLaboratoryExamQuery(clinicalCaseId);
 
   if (laboratoryExamError) {
     console.log(laboratoryExamError);
@@ -134,15 +213,13 @@ export const fetchExams = async (clinicalCaseId: string) => {
       ...laboratoryExam.map(e => ({
         ...e,
         type: ExamTypes.LaboratoryExam,
-        title: e.laboratory_exam_type.name,
+        title: e.laboratory_exam_type?.name ?? 'ERROR',
         answer: e.details,
       }))
     );
 
-  const { data: objectiveExam, error: objectiveExamError } = await supabase
-    .from<ObjectiveExam>('objective_exam')
-    .select(`*, body_district:body_district(*))`)
-    .eq('clinical_case', clinicalCaseId);
+  const { data: objectiveExam, error: objectiveExamError } =
+    await getObjectiveExamQuery(clinicalCaseId);
 
   if (objectiveExamError) {
     console.log(objectiveExamError);
@@ -151,7 +228,7 @@ export const fetchExams = async (clinicalCaseId: string) => {
       ...objectiveExam.map(e => ({
         ...e,
         type: ExamTypes.ObjectiveExam,
-        title: e.body_district.label,
+        title: e.body_district?.label ?? 'ERROR',
         answer: e.details,
       }))
     );
@@ -159,31 +236,28 @@ export const fetchExams = async (clinicalCaseId: string) => {
   return exams;
 };
 
-export const fetchQuizzes = async (clinicalCaseId: string) => {
-  const quizzes: (Quiz & { answers: QuizAnswer[] })[] = [];
+export const fetchDiagnosisQuestions = async (clinicalCaseId: string) => {
+  const diagnosisQuestions = [];
 
-  const { data, error } = await supabase
-    .from<Quiz>('quiz')
-    .select('*')
-    .eq('clinical_case', clinicalCaseId);
+  const { data, error } = await getDiagnosisQuestionsQuery(clinicalCaseId);
 
   if (error) {
     console.log(error);
-    return quizzes;
+    return null;
   }
 
   for (const q of data) {
     const { data: answers, error } = await supabase
-      .from<QuizAnswer>('quiz_answer')
+      .from('diagnosisquestion_answer')
       .select('*')
-      .eq('quiz', q.id);
+      .eq('diagnosisquestion', q.id);
 
     if (error) {
       console.log(error);
     } else {
-      quizzes.push({ ...q, answers });
+      diagnosisQuestions.push({ ...q, answers });
     }
   }
 
-  return quizzes;
+  return diagnosisQuestions;
 };

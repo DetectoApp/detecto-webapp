@@ -7,7 +7,7 @@
     "@chakra-ui/react": "^2.2.1",
     "@emotion/react": "^11.0.0",
     "@emotion/styled": "^11.0.0",
-    "@supabase/supabase-js": "^1.35.3",
+    "@supabase/supabase-js": "^2.39.1",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.0.1",
     "@testing-library/user-event": "^14.1.0",
@@ -31,6 +31,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "supabase-typegen": "npx supabase gen types typescript --project-id epwmutfdzwlftgvlfmap > database.types.ts",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

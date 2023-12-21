@@ -26,8 +26,13 @@ import {
 import { ExamTypes, TalkTypes } from '../../../../types/enums';
 import { OneOfExam } from '../../../../types/examTypes';
 import { OneOfTalk } from '../../../../types/talkTypes';
-import { ClinicalCase, Quiz, QuizAnswer } from '../../../../types/types';
+import { ClinicalCase } from '../../../../types/types';
 import { ChoiceButtonGroup } from '../../../../components/inputs/ChoiceButtonGroup';
+import {
+  ClinicalCaseDataType,
+  OneOfExamDataType,
+  OneOfTalkDataType,
+} from '@/supabase/queries';
 
 export const ClinicalCaseDiagnosisModal = ({
   clinicalCase,
@@ -35,13 +40,13 @@ export const ClinicalCaseDiagnosisModal = ({
   playedTalks,
   availableExams,
   playedExams,
-  availableQuizzes,
-  playedQuizzes,
+  availableDiagnosisQuestions,
+  playedDiagnosisQuestions,
   ...modalProps
 }: {
-  clinicalCase: ClinicalCase;
+  clinicalCase: ClinicalCaseDataType;
   availableTalks:
-    | (OneOfTalk & {
+    | (OneOfTalkDataType & {
         type: TalkTypes;
         answer: string;
         title: string;
@@ -49,25 +54,23 @@ export const ClinicalCaseDiagnosisModal = ({
     | null;
   playedTalks: TalkStatus[];
   availableExams:
-    | (OneOfExam & { type: ExamTypes; answer: string; title: string })[]
+    | (OneOfExamDataType & { type: ExamTypes; answer: string; title: string })[]
     | null;
   playedExams: ExamStatus[];
-  availableQuizzes:
-    | (Quiz & {
-        answers: QuizAnswer[];
-      })[]
-    | null;
-  playedQuizzes: QuizAnswer[];
+  availableDiagnosisQuestions: any[] | null;
+  playedDiagnosisQuestions: any[];
 } & Partial<Omit<ModalProps, 'children'>>) => {
-  const [page, setPage] = useState<'quiz' | 'finished'>('quiz');
+  const [page, setPage] = useState<'diagnosisquestion' | 'finished'>(
+    'diagnosisquestion'
+  );
 
   const getPanelToRender = () => {
     switch (page) {
-      case 'quiz':
+      case 'diagnosisquestion':
         return (
-          <QuizDiagnosisStep
-            availableQuizzes={availableQuizzes}
-            playedQuizzes={playedQuizzes}
+          <DiagnosisQuestionDiagnosisStep
+            availableDiagnosisQuestions={availableDiagnosisQuestions}
+            playedDiagnosisQuestions={playedDiagnosisQuestions}
             onLastConfirm={() => setPage('finished')}
           />
         );
@@ -79,8 +82,8 @@ export const ClinicalCaseDiagnosisModal = ({
             playedExams={playedExams}
             availableTalks={availableTalks}
             playedTalks={playedTalks}
-            availableQuizzes={availableQuizzes}
-            playedQuizzes={playedQuizzes}
+            availableDiagnosisQuestions={availableDiagnosisQuestions}
+            playedDiagnosisQuestions={playedDiagnosisQuestions}
           />
         );
       default:
@@ -97,43 +100,43 @@ export const ClinicalCaseDiagnosisModal = ({
   );
 };
 
-const QuizDiagnosisStep = ({
-  availableQuizzes,
-  playedQuizzes,
+const DiagnosisQuestionDiagnosisStep = ({
+  availableDiagnosisQuestions,
+  playedDiagnosisQuestions,
   onLastConfirm,
 }: {
-  availableQuizzes:
-    | (Quiz & {
-        answers: QuizAnswer[];
-      })[]
-    | null;
-  playedQuizzes: QuizAnswer[];
+  availableDiagnosisQuestions: any[] | null;
+  playedDiagnosisQuestions: any[];
   onLastConfirm: () => void;
 }) => {
   const navigate = useNavigate();
 
-  const [quizIndex, setQuizIndex] = useState<number>(0);
-  const currentQuiz = availableQuizzes?.[quizIndex];
+  const [diagnosisquestionIndex, setDiagnosisQuestionIndex] =
+    useState<number>(0);
+  const currentDiagnosisQuestion =
+    availableDiagnosisQuestions?.[diagnosisquestionIndex];
 
-  const { setQuizStatus, quizStatus } = useCaseExplorationStore(s => {
-    return {
-      setQuizStatus: s.setQuizAnswer,
-      quizStatus: s.quizAnswers,
-    };
-  });
+  const { setDiagnosisQuestionStatus, diagnosisquestionStatus } =
+    useCaseExplorationStore(s => {
+      return {
+        setDiagnosisQuestionStatus: s.setDiagnosisQuestionAnswer,
+        diagnosisquestionStatus: s.diagnosisquestionAnswers,
+      };
+    });
 
-  const currentQuizStatus = currentQuiz
-    ? quizStatus[currentQuiz?.id]
+  const currentDiagnosisQuestionStatus = currentDiagnosisQuestion
+    ? diagnosisquestionStatus[currentDiagnosisQuestion?.id]
     : undefined;
 
   const onConfirmButton = () => {
-    if (currentQuizStatus) {
-      if (quizIndex + 1 === availableQuizzes?.length) onLastConfirm();
-      else setQuizIndex(i => i + 1);
+    if (currentDiagnosisQuestionStatus) {
+      if (diagnosisquestionIndex + 1 === availableDiagnosisQuestions?.length)
+        onLastConfirm();
+      else setDiagnosisQuestionIndex(i => i + 1);
     }
   };
 
-  if (!availableQuizzes || !availableQuizzes.length) {
+  if (!availableDiagnosisQuestions || !availableDiagnosisQuestions.length) {
     return (
       <Box alignItems="center">
         <Text variant="page_title" mt="30px">
@@ -148,25 +151,30 @@ const QuizDiagnosisStep = ({
       <Flex gap="30px" w="100%" align="center">
         <Image w="64px" h="64px" src={CrossIcon} onClick={() => navigate(-1)} />
         <Stepper
-          steps={availableQuizzes ?? []}
-          currentStep={quizIndex}
+          steps={availableDiagnosisQuestions ?? []}
+          currentStep={diagnosisquestionIndex}
           grow="1"
         />
       </Flex>
-      <Text mt="12">{currentQuiz?.question}</Text>
+      <Text mt="12">{currentDiagnosisQuestion?.question}</Text>
 
-      {currentQuiz ? (
+      {currentDiagnosisQuestion ? (
         <ChoiceButtonGroup
-          values={currentQuiz.answers}
-          currentChoiceValue={currentQuizStatus}
-          onSelect={value => setQuizStatus(currentQuiz.id.toString(), value)}
+          values={currentDiagnosisQuestion.answers}
+          currentChoiceValue={currentDiagnosisQuestionStatus}
+          onSelect={value =>
+            setDiagnosisQuestionStatus(
+              currentDiagnosisQuestion.id.toString(),
+              value
+            )
+          }
         />
       ) : null}
       <Button
         mt="auto"
         ml="auto"
         onClick={onConfirmButton}
-        isDisabled={!currentQuizStatus}
+        isDisabled={!currentDiagnosisQuestionStatus}
       >
         Conferma
       </Button>
@@ -180,12 +188,12 @@ const FinishedDiagnosisStep = ({
   playedTalks,
   availableExams,
   playedExams,
-  availableQuizzes,
-  playedQuizzes,
+  availableDiagnosisQuestions,
+  playedDiagnosisQuestions,
 }: {
-  clinicalCase: ClinicalCase;
+  clinicalCase: ClinicalCaseDataType;
   availableTalks:
-    | (OneOfTalk & {
+    | (OneOfTalkDataType & {
         type: TalkTypes;
         answer: string;
         title: string;
@@ -193,21 +201,17 @@ const FinishedDiagnosisStep = ({
     | null;
   playedTalks: TalkStatus[];
   availableExams:
-    | (OneOfExam & { type: ExamTypes; answer: string; title: string })[]
+    | (OneOfExamDataType & { type: ExamTypes; answer: string; title: string })[]
     | null;
   playedExams: ExamStatus[];
-  availableQuizzes:
-    | (Quiz & {
-        answers: QuizAnswer[];
-      })[]
-    | null;
-  playedQuizzes: QuizAnswer[];
+  availableDiagnosisQuestions: any[] | null;
+  playedDiagnosisQuestions: any[];
 }) => {
   return (
     <Flex align="center" direction="column" h="100%" pb="5" pt="8" px="8">
       <Text variant="page_title">Caso completato</Text>
       <ClinicalCaseAvatar
-        avatar={clinicalCase.avatar}
+        avatar={clinicalCase.avatar ?? 'ERROR'}
         mt="5"
         flexGrow="1"
         maxHeight="30vh"
@@ -297,24 +301,25 @@ const FinishedDiagnosisStep = ({
       })}
 
       <Text variant="page_title_sm" mb="4" mt="6">
-        Quiz
+        DiagnosisQuestion
       </Text>
 
-      {playedQuizzes.map(quizStatus => {
-        const quiz = availableQuizzes?.find(
-          quiz => quiz.id === quizStatus.quiz
+      {playedDiagnosisQuestions.map(diagnosisquestionStatus => {
+        const diagnosisquestion = availableDiagnosisQuestions?.find(
+          diagnosisquestion =>
+            diagnosisquestion.id === diagnosisquestionStatus.diagnosisquestion
         );
         return (
           <ExpandableLogoContainer
-            title={quiz?.question ?? ''}
+            title={diagnosisquestion?.question ?? ''}
             titleIconUrl={DiagnosisIcon}
             titleBackgroundColor="error"
             w="100%"
             mb="2"
           >
-            <Text variant="regular_20_1p">{quizStatus.text}</Text>
+            <Text variant="regular_20_1p">{diagnosisquestionStatus.text}</Text>
             <Text variant="regular_20_1p">
-              {quizStatus.is_correct ? 'CORRETTA' : 'NON CORRETTA'}
+              {diagnosisquestionStatus.is_correct ? 'CORRETTA' : 'NON CORRETTA'}
             </Text>
           </ExpandableLogoContainer>
         );
