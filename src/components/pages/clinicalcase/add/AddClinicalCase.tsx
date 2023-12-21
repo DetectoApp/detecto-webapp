@@ -1,16 +1,15 @@
-import { Button, Flex, Image, useToast } from '@chakra-ui/react';
+import { Button, Flex, Image } from '@chakra-ui/react';
 import { useFormik } from 'formik';
 import React, { useState } from 'react';
 import * as Yup from 'yup';
 import CrossIcon from '../../../../assets/cross_icon.svg';
-import supabase from '../../../../supabase';
 import { ClinicalCase, Gender } from '../../../../types/types';
 import { Stepper } from '../../../layout/Stepper';
 import { useAuth } from '../../../providers/AuthProvider';
-import { AddClinicalCasePage1 } from './AddClinicalCasePage1';
-import { AddClinicalCasePage2 } from './AddClinicalCasePage2';
 import { AddClinicalCaseBlocksPage } from './AddClinicalCaseBlocksPage';
 import { AddClinicalCaseFinalPage } from './AddClinicalCaseFinalPage';
+import { AddClinicalCasePage1 } from './AddClinicalCasePage1';
+import { AddClinicalCasePage2 } from './AddClinicalCasePage2';
 
 export type ClinicalCaseFormType = Omit<
   ClinicalCase,
@@ -27,7 +26,6 @@ const schema = Yup.object<ClinicalCaseFormType>({
 });
 
 export default function AddClinicalCase() {
-  const toast = useToast();
   const { user } = useAuth();
 
   const formik = useFormik<ClinicalCaseFormType>({

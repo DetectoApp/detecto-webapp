@@ -1,20 +1,19 @@
-import supabase from '../../supabase';
-import { UserLoginData, UserRegistrationData } from '../../types/types';
 import {
   AuthError,
   AuthResponse,
-  Provider,
   Session,
   User,
   UserResponse,
 } from '@supabase/supabase-js';
 import React, {
-  useState,
-  useEffect,
+  ReactNode,
   createContext,
   useContext,
-  ReactNode,
+  useEffect,
+  useState,
 } from 'react';
+import supabase from '../../supabase';
+import { UserLoginData, UserRegistrationData } from '../../types/types';
 
 interface AuthContextContent {
   register: (data: UserRegistrationData) => Promise<AuthResponse>;
@@ -39,7 +38,7 @@ export function useAuth() {
 export function AuthProvider({
   children,
 }: {
-  children: (isLoggedIn: boolean) => ReactNode;
+  children: (isLoggedIn: boolean, session: Session | null) => ReactNode;
 }) {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
@@ -87,7 +86,7 @@ export function AuthProvider({
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children(!!user)}
+      {!loading && children(user !== null, session)}
     </AuthContext.Provider>
   );
 }

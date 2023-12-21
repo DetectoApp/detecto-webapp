@@ -3,16 +3,15 @@ import {
   Button,
   Flex,
   Grid,
+  Image,
   Skeleton,
   Text,
-  Image,
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import supabase from '../../../supabase';
-import { CaseStatus, ClinicalCase } from '../../../types/types';
-import { ClinicalCaseAvatarBoxed } from '../../ClinicalCaseAvatar';
 import { ClinicalCaseDataType, fetchCases } from '../../../supabase/queries';
+import { CaseStatus } from '../../../types/types';
+import { ClinicalCaseAvatarBoxed } from '../../ClinicalCaseAvatar';
 
 export default function ClinicalCaseList() {
   const [{ cases, draftCases }, setClinicalCase] = useState<{

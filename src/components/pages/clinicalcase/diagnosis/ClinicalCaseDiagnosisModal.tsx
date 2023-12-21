@@ -1,4 +1,9 @@
 import {
+  ClinicalCaseDataType,
+  OneOfExamDataType,
+  OneOfTalkDataType,
+} from '@/supabase/queries';
+import {
   Box,
   Button,
   Flex,
@@ -16,6 +21,7 @@ import ExamIcon from '../../../../assets/exam_icon.svg';
 import TalkIcon from '../../../../assets/talk_icon.svg';
 import { ClinicalCaseAvatar } from '../../../../components/ClinicalCaseAvatar';
 import { ExpandableLogoContainer } from '../../../../components/ModalComponents';
+import { ChoiceButtonGroup } from '../../../../components/inputs/ChoiceButtonGroup';
 import { Stepper } from '../../../../components/layout/Stepper';
 import { getString } from '../../../../intl';
 import {
@@ -24,15 +30,6 @@ import {
   useCaseExplorationStore,
 } from '../../../../store';
 import { ExamTypes, TalkTypes } from '../../../../types/enums';
-import { OneOfExam } from '../../../../types/examTypes';
-import { OneOfTalk } from '../../../../types/talkTypes';
-import { ClinicalCase } from '../../../../types/types';
-import { ChoiceButtonGroup } from '../../../../components/inputs/ChoiceButtonGroup';
-import {
-  ClinicalCaseDataType,
-  OneOfExamDataType,
-  OneOfTalkDataType,
-} from '@/supabase/queries';
 
 export const ClinicalCaseDiagnosisModal = ({
   clinicalCase,
