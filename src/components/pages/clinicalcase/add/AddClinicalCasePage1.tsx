@@ -11,7 +11,7 @@ export const AddClinicalCasePage1 = ({
   formik: FormikProps<ClinicalCaseFormType>;
 }) => {
   return (
-    <VStack my="4" h="45">
+    <VStack my="4">
       <CustomInput
         label="Name"
         mb="2"

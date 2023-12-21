@@ -1,9 +1,9 @@
-import { VStack } from '@chakra-ui/react';
+import { Button, Flex, Grid, Image, Text, VStack } from '@chakra-ui/react';
 import { FormikProps } from 'formik';
 import React from 'react';
-import { CustomInput } from '../../../inputs/CustomInput';
-import { ClinicalCaseFormType } from './AddClinicalCase';
 import CrossIcon from '../../../../assets/cross_icon.svg';
+import { CollapsableCard } from '../../../layout/CollapsableCard';
+import { ClinicalCaseFormType } from './AddClinicalCase';
 
 const getMockOptions = async () => {
   return ['a', 'b'];
@@ -43,49 +43,60 @@ export const AddClinicalCaseBlocksPage = ({
   formik: FormikProps<ClinicalCaseFormType>;
 }) => {
   return (
-    <VStack my="4" h="45">
-      <CustomInput
-        label="weight"
-        mb="2"
-        name="patient_weight"
-        type="number"
-        step="5"
-        errorText={
-          formik.touched.patient_weight && formik.errors.patient_weight
-        }
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        isDisabled={formik.isSubmitting}
-        placeholder="patient weight"
-      />
-
-      <CustomInput
-        label="height"
-        mb="2"
-        name="patient_height"
-        type="number"
-        step="5"
-        errorText={
-          formik.touched.patient_weight && formik.errors.patient_weight
-        }
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        isDisabled={formik.isSubmitting}
-        placeholder="patient height"
-      />
-      <CustomInput
-        label="brief description"
-        mb="2"
-        name="brief_description"
-        type="textarea"
-        errorText={
-          formik.touched.brief_description && formik.errors.brief_description
-        }
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        isDisabled={formik.isSubmitting}
-        placeholder="patient brief description"
-      />
+    <VStack my="4">
+      <CollapsableCard
+        headerComponent={isExpanded => (
+          <Flex
+            justify="space-between"
+            align="center"
+            w="100%"
+            padding=".75rem 1rem"
+            bg="red"
+          >
+            <Text variant="button" textTransform="uppercase">
+              Pino
+            </Text>
+            <Image
+              w="2rem"
+              h="2rem"
+              style={{
+                transform: isExpanded ? 'rotateX(180deg)' : '',
+                transition: '500ms linear all',
+              }}
+              src="PINO"
+            />
+          </Flex>
+        )}
+      >
+        <Flex padding="1.5rem 1.25rem">
+          <Grid templateColumns="repeat(3, 1fr)" gap={2} w="100%">
+            <Flex direction="column" align="center">
+              <Button w="4rem" h="4rem">
+                <Image src="PINO" w="2.5rem" h="2.5rem" />
+              </Button>
+              <Text w="100%" textAlign="center" mt=".5rem">
+                Pino1
+              </Text>
+            </Flex>
+            <Flex direction="column" align="center">
+              <Button w="4rem" h="4rem">
+                <Image src="PINO" w="2.5rem" h="2.5rem" />
+              </Button>
+              <Text w="100%" textAlign="center" mt=".5rem">
+                Pino1
+              </Text>
+            </Flex>
+            <Flex direction="column" align="center">
+              <Button w="4rem" h="4rem">
+                <Image src="PINO" w="2.5rem" h="2.5rem" />
+              </Button>
+              <Text w="100%" textAlign="center" mt=".5rem">
+                Pino1
+              </Text>
+            </Flex>
+          </Grid>
+        </Flex>
+      </CollapsableCard>
     </VStack>
   );
 };

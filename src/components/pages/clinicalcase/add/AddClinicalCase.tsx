@@ -59,23 +59,26 @@ export default function AddClinicalCase() {
         <Stepper steps={steps} currentStep={stepIndex} grow="1" />
       </Flex>
       {steps[stepIndex]}
-      <Button
-        disabled={stepIndex === steps.length - 1}
-        onClick={() => {
-          console.log(stepIndex, stepIndex + 1);
-          setStepIndex(s => s + 1);
-        }}
-      >
-        next
-      </Button>
-      <Button
-        disabled={stepIndex === 0}
-        onClick={() => {
-          setStepIndex(s => s - 1);
-        }}
-      >
-        previous
-      </Button>
+
+      <Flex>
+        <Button
+          disabled={stepIndex === 0}
+          onClick={() => {
+            setStepIndex(s => s - 1);
+          }}
+        >
+          previous
+        </Button>
+        <Button
+          disabled={stepIndex === steps.length - 1}
+          onClick={() => {
+            console.log(stepIndex, stepIndex + 1);
+            setStepIndex(s => s + 1);
+          }}
+        >
+          next
+        </Button>
+      </Flex>
     </Flex>
   );
 }
